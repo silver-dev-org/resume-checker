@@ -162,6 +162,22 @@ export default function GradeForm() {
           </div>
         </div>
       ) : null}
+
+      {formState.data ? <Review data={formState.data} /> : null}
+    </div>
+  );
+}
+
+function Review({ data }: { data: FormState["data"] }) {
+  return (
+    <div>
+      <h2 className="text-2xl mb-4">Score: {data?.grade}</h2>
+      <h3 className="text-xl mt-4 mb-2">Review</h3>
+      <p>{data?.review}</p>
+      <h3 className="text-xl mt-4 mb-2">Red flags</h3>
+      <ul>{data?.red_flags.map((flag) => <li key={flag}>{flag}</li>)}</ul>
+      <h3 className="text-xl mt-4 mb-2">Yellow flags</h3>
+      <ul>{data?.yellow_flags.map((flag) => <li key={flag}>{flag}</li>)}</ul>
     </div>
   );
 }
