@@ -9,8 +9,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #111111;
+    --foreground: #2e251f;
   }
 }
 
@@ -24,4 +24,24 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+@keyframes shimmer {
+  from {
+    background-position-x: calc(var(--to) * -1ch);
+  }
+
+  to {
+    background-position-x: calc(var(--to) * 1ch);
+  }
+}
+
+.thinking {
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-text-fill-color: transparent;
+  will-change: background-position-x;
+  animation: shimmer 3s ease infinite;
+  background-repeat: no-repeat;
+  background-image: linear-gradient(to right, transparent, white 49%, white 51%, transparent);
 }
