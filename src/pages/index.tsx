@@ -37,16 +37,26 @@ export default function Home() {
         throw new Error("Url must start with https and end with pdf");
       }
 
+      let res;
+
       if (formData) {
-        return fetch("/api/grade", {
+        res = await fetch("/api/grade", {
           method: "POST",
           body: formData,
-        }).then((b) => b.json());
+        });
+
+        return res.json();
       } else {
-        return fetch("/api/grade?url=" + url, {
+        res = await fetch("/api/grade?url=" + url, {
           method: "POST",
-        }).then((b) => b.json());
+        });
       }
+
+      if (!res.ok) {
+        throw new Error("Hubo un error inesperado");
+      }
+
+      return res.json();
     },
     onSuccess: () => {
       router.push("/review");
@@ -68,7 +78,8 @@ export default function Home() {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: { file: [".pdf"] },
+    accept: { "application/pdf": [] },
+    multiple: false,
   });
 
   usePasteEvent(async (event: ClipboardEvent) => {
