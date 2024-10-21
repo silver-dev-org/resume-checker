@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import pdfParse from "pdf-parse";
 import OpenAI from "openai";
+import { z } from "zod";
+import { zodResponseFormat } from "openai/helpers/zod.mjs";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -11,38 +13,91 @@ function isMultipartFormData(req: NextApiRequest) {
 }
 
 const sysPrompt = `
-You are an expert career advisor and recruiter with extensive experience in reviewing and analyzing resumes. 
-Your goal is to evaluate the content, format, and impact of resumes submitted by job seekers.
-You provide constructive feedback, a grade from F to A, and specific suggestions for improvement.
-Consider clarity, structure, relevant skills, accomplishments, formatting, and how well the resume targets the desired role if and only if the desired role is in the user prompt.
+  Eres un asesor profesional y reclutador experto con amplia experiencia en revisar y analizar currículums.
+  Tu objetivo es evaluar el contenido, el formato y el impacto de los currículums enviados por los solicitantes de empleo.
+  Proporcionas retroalimentación constructiva, una calificación de F a A, y S para un currículum excepcionalmente bueno, junto con sugerencias específicas para mejorar.
 
-You will also provide two arrays in the response, red_flags and yellow_flags, red flags are very bad signs and yellow flags are a little less bad.
+  Sigue estas guías:
 
-response will be in this format EXACTLY, replacing the text inside the # signs, 
-avoid any newlines and wrap sentences with quotes like these "", the response MUST BE JSON
+  - Formato
+    - Usa una plantilla
+      - Google Docs tiene una plantilla inicial sólida que es fácil de usar y estética.
+      - Las empresas en EE. UU. prefieren currículums de estilo Latex (Latex-style).
+          - Creador de estilo Latex como https://typst.app/ - Usa plantillas como modern-pro, imprecv, modern-cv, o basic-resume.
+          - Creador estilo Latex en Overleaf, por ejemplo, esta plantilla.
+      - Diseños personalizados y palabras innecesarias son motivo de degradación inmediata y rechazo.
+    - Debe caber en una sola página.
+  - Contenido Principal
+    - El currículum debe ser consistente, pero no idéntico, a tu perfil de LinkedIn.
+        - Las discrepancias generan preocupaciones, y las preocupaciones llevan al rechazo.
+    - Ajusta tu currículum a la empresa objetivo.
+        - Revisa los perfiles existentes de la empresa y haz que coincidan. Estos son los “ganadores”.
+        - Cambia los títulos de los trabajos, el contenido, el mensaje y las habilidades para que se ajusten mejor a lo que la empresa está buscando.
+        - Debes contar una breve historia que destaque los puntos clave de venta de tu perfil.
+    - [Recomendado] Agrega una sección de "acerca de mí" o una introducción adaptada para cada empresa.
+      - Esta introducción debe responder explícita o implícitamente la pregunta "¿Por qué debería la empresa XXX contratarme?"
+    - No incluyas imágenes ni fotos de perfil. Esto es tabú para empresas de EE. UU.
+    - Pasa siempre tu contenido por Grammarly. Los errores tipográficos provocan el rechazo.
 
-{
-  "grade": #GRADE#,
-  "red_flags": [#red_flag_1#, #red_flag_2#],
-  "yellow_flags": [#yellow_flag_1#, #yellow_flag_2#],
-  "review": #General review#
-}
+  - NO HACER
+    - No hagas currículums personalizados ni uses herramientas desactualizadas como Word.
+    - Evita estrategias de "disparar a todo" (Spray & Pray).
+    - No agregues imágenes ni fotos.
+    - No excedas una página.
+    - No uses Hotmail como proveedor de correo.
+    - No incluyas un enlace a GitHub si no tienes proyectos, contribuciones significativas o actividad.
 
+  También proporcionarás dos arreglos en la respuesta: "red_flags" y "yellow_flags".
+  Las "red_flags" son señales muy malas y las "yellow_flags" son un poco menos graves.
+
+  La respuesta será en este formato EXACTAMENTE, reemplazando el texto dentro de los #, evita cualquier salto de línea y envuelve las oraciones entre comillas como estas "",
+  la respuesta DEBE SER JSON:
+
+  {
+    "grade": #GRADE#,
+    "red_flags": [#red_flag_1#, #red_flag_2#],
+    "yellow_flags": [#yellow_flag_1#, #yellow_flag_2#],
+    "review": #General review#
+  }
 `;
 
 function userPrompt(text: string) {
   return `
-Please evaluate this resume. Provide a grade from F to A, along with feedback on how the candidate can improve. 
-Take into consideration that a lot of the formatting (spaces mostly) are lost when extracting the text from the pdf file, do not take that into account
+Por favor, evalúa este currículum y proporciona una calificación que vaya de F a A, con S para currículums excepcionalmente buenos.
+Además, ofrece comentarios detallados sobre cómo se puede mejorar el currículum. Ten en cuenta que, al extraer el texto del archivo PDF,
+parte del formato (principalmente los espacios) puede perderse, así que no tomes eso en cuenta.
 
-Consider the following aspects:
+La respuesta debe dirigirse a mí, por lo que en lugar de hablar "sobre el candidato", comunícate directamente conmigo para darme los consejos.
 
-- Clarity and readability
-- Structure and organization
-- Relevant skills and accomplishments
-- How well the resume aligns with the candidate's target role.
+Sigue estas guías:
 
-My resume:
+- Formato
+  - Usa una plantilla
+    - Google Docs tiene una plantilla inicial sólida que es fácil de usar y estética.
+    - Las empresas en EE. UU. prefieren currículums de estilo Latex (Latex-style).
+        - Creador de estilo Latex como https://typst.app/ - Usa plantillas como modern-pro, imprecv, modern-cv, o basic-resume.
+        - Creador estilo Latex en Overleaf, por ejemplo, esta plantilla.
+    - Diseños personalizados y palabras innecesarias son motivo de degradación inmediata y rechazo.
+  - Debe caber en una sola página.
+- Contenido Principal
+  - El currículum debe ser consistente, pero no idéntico, a tu perfil de LinkedIn.
+      - Las discrepancias generan preocupaciones, y las preocupaciones llevan al rechazo.
+  - Ajusta tu currículum a la empresa objetivo.
+      - Revisa los perfiles existentes de la empresa y haz que coincidan. Estos son los “ganadores”.
+      - Cambia los títulos de los trabajos, el contenido, el mensaje y las habilidades para que se ajusten mejor a lo que la empresa está buscando.
+      - Debes contar una breve historia que destaque los puntos clave de venta de tu perfil.
+  - [Recomendado] Agrega una sección de "acerca de mí" o una introducción adaptada para cada empresa.
+    - Esta introducción debe responder explícita o implícitamente la pregunta "¿Por qué debería la empresa XXX contratarme?"
+  - No incluyas imágenes ni fotos de perfil. Esto es tabú para empresas de EE. UU.
+  - Pasa siempre tu contenido por Grammarly. Los errores tipográficos provocan el rechazo.
+
+- NO HACER
+  - No hagas currículums personalizados ni uses herramientas desactualizadas como Word.
+  - Evita estrategias de "disparar a todo" (Spray & Pray).
+  - No agregues imágenes ni fotos.
+  - No excedas una página.
+  - No uses Hotmail como proveedor de correo.
+  - No incluyas un enlace a GitHub si no tienes proyectos, contribuciones significativas o actividad.
 
 
 ${text}
@@ -61,13 +116,14 @@ ${text}
 `;
 }
 
-type ResponseData =
-  | {
-      grade: string;
-      red_flags: Array<string>;
-      yellow_flags: Array<string>;
-    }
-  | { error: string };
+type ResponseData = z.infer<typeof ResponseSchema> | { error: string };
+
+const ResponseSchema = z.object({
+  grade: z.enum(["S", "A", "B", "C", "D", "E", "F"]),
+  red_flags: z.array(z.string()),
+  yellow_flags: z.array(z.string()),
+  review: z.string(),
+});
 
 export default async function handler(
   req: NextApiRequest,
@@ -98,21 +154,28 @@ export default async function handler(
     }
 
     const pdf = await pdfParse(pdfBuffer);
+
     const cleaningCompletion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [{ role: "user", content: cleanupPrompt(pdf.text) }],
     });
     const [clean] = cleaningCompletion.choices;
 
-    const completion = await openai.chat.completions.create({
+    const completion = await openai.beta.chat.completions.parse({
       model: "gpt-4o-mini",
       messages: [
         { role: "system", content: sysPrompt },
         { role: "user", content: userPrompt(clean.message.content || "") },
       ],
+      response_format: zodResponseFormat(ResponseSchema, "review"),
     });
 
-    res.status(200).json(JSON.parse(completion.choices[0].message.content));
+    const response = completion.choices?.[0].message.parsed;
+    if (!response) {
+      throw new Error("Couldn't complete chat request");
+    }
+
+    res.status(200).json(response);
   } catch (err) {
     console.error(err);
     res.status(500).send({ error: "Unexpected error " });
