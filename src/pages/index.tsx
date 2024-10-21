@@ -14,17 +14,6 @@ export default function Home() {
           Silver.dev
         </Link>
       </p>
-
-      <iframe
-        className="rounded-lg shadow-lg mt-4 max-w-xs md:max-w-none"
-        width="560"
-        height="315"
-        src="https://www.youtube.com/embed/D-OYA2UzlJQ?si=p3dHHaOvHH8VrN1Z"
-        title="YouTube video player"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerPolicy="strict-origin-when-cross-origin"
-        allowFullScreen
-      ></iframe>
     </>
   );
 }
