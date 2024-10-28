@@ -34,7 +34,7 @@ export default function Home() {
     mutationKey: ["resume-check"],
     mutationFn: async ({ url, formData }) => {
       if (url && (!url.startsWith("https") || !url.endsWith(".pdf"))) {
-        throw new Error("Url must start with https and end with pdf");
+        throw new Error("El URL tiene que empezar con 'https' y terminar con 'pdf'");
       }
 
       let res;
