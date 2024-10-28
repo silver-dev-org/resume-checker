@@ -1,12 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import pdfParse from "pdf-parse";
-import OpenAI from "openai";
+import { generateObject, generateText } from "ai";
+import { openai } from "@ai-sdk/openai";
 import { z } from "zod";
-import { zodResponseFormat } from "openai/helpers/zod.mjs";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 function isMultipartFormData(req: NextApiRequest) {
   return req.headers["content-type"]?.includes("multipart/form-data");
@@ -155,27 +151,23 @@ export default async function handler(
 
     const pdf = await pdfParse(pdfBuffer);
 
-    const cleaningCompletion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: cleanupPrompt(pdf.text) }],
-    });
-    const [clean] = cleaningCompletion.choices;
-
-    const completion = await openai.beta.chat.completions.parse({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: sysPrompt },
-        { role: "user", content: userPrompt(clean.message.content || "") },
-      ],
-      response_format: zodResponseFormat(ResponseSchema, "review"),
+    const clean = await generateText({
+      model: openai("gpt-4o-mini"),
+      prompt: cleanupPrompt(pdf.text),
     });
 
-    const response = completion.choices?.[0].message.parsed;
-    if (!response) {
+    const completion = await generateObject({
+      model: openai("gpt-4o-mini"),
+      system: sysPrompt,
+      prompt: userPrompt(clean.text),
+      schema: ResponseSchema,
+    });
+
+    if (!completion) {
       throw new Error("Couldn't complete chat request");
     }
 
-    res.status(200).json(response);
+    res.status(200).json(completion.object);
   } catch (err) {
     console.error(err);
     res.status(500).send({ error: "Unexpected error " });
