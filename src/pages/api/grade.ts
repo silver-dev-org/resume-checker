@@ -170,7 +170,9 @@ export default async function handler(
     res.status(200).json(completion.object);
   } catch (err) {
     console.error(err);
-    res.status(500).send({ error: "Unexpected error " });
+    res
+      .status(500)
+      .send({ error: err instanceof Error ? err.message : "Unexpected error" });
   }
 }
 
