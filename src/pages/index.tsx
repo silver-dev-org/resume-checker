@@ -44,8 +44,6 @@ export default function Home() {
           method: "POST",
           body: formData,
         });
-
-        return res.json();
       } else {
         res = await fetch("/api/grade?url=" + url, {
           method: "POST",
