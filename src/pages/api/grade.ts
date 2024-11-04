@@ -1,116 +1,136 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import pdfParse from "pdf-parse";
-import { generateObject, generateText } from "ai";
-import { openai } from "@ai-sdk/openai";
+import { generateObject } from "ai";
 import { z } from "zod";
+import { google } from "@ai-sdk/google";
+import fs from "node:fs";
+import path from "node:path";
 
 function isMultipartFormData(req: NextApiRequest) {
   return req.headers["content-type"]?.includes("multipart/form-data");
 }
 
+const vigonResponse = {
+  object: {
+    grade: "A",
+    yellow_flags: [],
+    red_flags: [],
+    review: `Tu currículum tiene un buen contenido y está bien estructurado, felicitaciones. Asegúrate de ajustar tu currículum a la empresa a la que aplicas, revisando sus perfiles y alineando tus experiencias y habilidades con lo que buscan. Además, considera agregar una sección de 'acerca de mí' más específica que responda a por qué deberían contratarte.`,
+  },
+};
+
+const silverResponse = {
+  object: {
+    grade: "D",
+    yellow_flags: [
+      "Incluir tecnologías en el título o subtítulo del CV, lo que hace que parezca menos profesional y más limitado.",
+      "Usar un correo en Hotmail, proyecta una imagen anticuada.",
+      "Incluir el domicilio completo en el CV; basta con mencionar ciudad y país si es relevante.",
+    ],
+    red_flags: [
+      "Incluir la fecha de nacimiento, es innecesario y puede dar lugar a sesgos.",
+      "Incluir detalles irrelevantes ('fluff') en la sección de Mercado Libre, lo que hace que el CV sea menos conciso y directo.",
+    ],
+    review: `El CV de Gabriel tiene una estructura y contenido sólidos, pero hay algunos puntos importantes que pueden mejorarse para adaptarse mejor a las expectativas del mercado laboral en EE. UU.`,
+  },
+};
+
+const badResumeResponse = {
+  object: {
+    grade: "F",
+    red_flags: [
+      "Formato y diseño: El CV parece no seguir el estilo recomendado para Estados Unidos (como Latex o un generador similar), lo que puede restarle profesionalismo. Optar por un formato como Typst o Overleaf con plantillas de estilo moderno daría una mejor impresión.",
+      "Posible uso de Word u otro procesador anticuado: Si el CV fue hecho en Word o con un formato que no luce profesional, puede ser un motivo de rechazo en algunos casos.",
+      "Uso de imágenes: Las empresas en Estados Unidos consideran inapropiado incluir imágenes en el CV, ya que esto no es estándar y puede generar una percepción negativa.",
+      "Representación de habilidades en porcentajes: Mostrar habilidades con porcentajes es desaconsejable, ya que no comunica de manera clara el nivel real de competencia y puede dar lugar a malinterpretaciones. Se prefiere un formato que indique los conocimientos y experiencia de forma descriptiva.",
+    ],
+    yellow_flags: [],
+    review: `Recomiendo ajustar el formato y revisar cuidadosamente la redacción para maximizar las oportunidades en el mercado laboral de EE.UU.`,
+  },
+};
+
 const sysPrompt = `
-  Eres un asesor profesional y reclutador experto con amplia experiencia en revisar y analizar currículums.
-  Tu objetivo es evaluar el contenido, el formato y el impacto de los currículums enviados por los solicitantes de empleo.
-  Proporcionas retroalimentación constructiva, una calificación de F a A, y S para un currículum excepcionalmente bueno, junto con sugerencias específicas para mejorar.
+Eres un asesor profesional y reclutador experto con amplia experiencia en revisar y analizar currículums.
+Tu objetivo es evaluar el contenido, el formato y el impacto de los currículums enviados por los solicitantes de empleo.
+Proporcionas retroalimentación constructiva, una calificación de F a A, y S para un currículum excepcionalmente bueno, junto con sugerencias específicas para mejorar.
 
-  Sigue estas guías:
+Sigue estas guía:
+--- Comienzo de guía ---
+- Formato
+  - Usá un template
+    - Google Docs tiene una buena plantilla para empezar que es fácil de usar y está bien estéticamente
+    - A las empresas en USA les gusta el CV en estilo Latex, podés usar:
+      - un builder estilo Latex como Typst y elegí un template como modern-pro, imprecv, modern-cv, o basic-resume, o
+      - un builder Latex-style como Overleaf y elegí este template.
+  - Los diseños creativos y entregados en Word le bajan la calidad a tu CV y hasta pueden llegar a ser motivos de rechazo.
+  - Tiene que ser en una sola página.
+- Contenido principal
+  - Editá tu CV de acuerdo a la empresa que lo estés mandando:
+    - Mirá perfiles de Linkedin de personas que trabajan en la empresa y copialos, estos son los “ganadores”.
+    - Cambiá nombres de las posiciones, contenido, mensajes y habilidades para tratar de que se ajusten más a lo que la empresa está buscando.
+    - Querés contar una historia que resalte los principales puntos fuertes de tu perfil.
+  - [Recomendado] Agregá una introducción o “acerca de” que acomodes para cada empresa.
+    - Esta introducción debería responder explícita o implícitamente a la pregunta de “Por qué la empresa XXX debería contratarme”.
+  - No incluyas imágenes ni foto de perfil. Esto es tabú para empresas en USA.
+  - Cada vez que edites el contenido pasale Grammarly, errores de tipeo en el CV son inaceptables.
+- Lo que no tenés que hacer
+  - Crear templates propios o usar herramientas anticuadas como Word.
+  - Evitar estrategias tipo “spray & pray” (usar el mismo CV genérico, indistintamente para todas tus postulaciones).
+  - Agregar imágenes y fotos.
+  - Tener más de una página.
+  - Usar una dirección de email @hotmail.
+  - Incluir un link a GitHub que no tengas proyectos, aportes importantes o actividad.
+  - No escribas el currículum en español
+--- Fin de guía ---
 
-  - Formato
-    - Usa una plantilla
-      - Google Docs tiene una plantilla inicial sólida que es fácil de usar y estética.
-      - Las empresas en EE. UU. prefieren currículums de estilo Latex (Latex-style).
-          - Creador de estilo Latex como https://typst.app/ - Usa plantillas como modern-pro, imprecv, modern-cv, o basic-resume.
-          - Creador estilo Latex en Overleaf, por ejemplo, esta plantilla.
-      - Diseños personalizados y palabras innecesarias son motivo de degradación inmediata y rechazo.
-    - Debe caber en una sola página.
-  - Contenido Principal
-    - El currículum debe ser consistente, pero no idéntico, a tu perfil de LinkedIn.
-        - Las discrepancias generan preocupaciones, y las preocupaciones llevan al rechazo.
-    - Ajusta tu currículum a la empresa objetivo.
-        - Revisa los perfiles existentes de la empresa y haz que coincidan. Estos son los “ganadores”.
-        - Cambia los títulos de los trabajos, el contenido, el mensaje y las habilidades para que se ajusten mejor a lo que la empresa está buscando.
-        - Debes contar una breve historia que destaque los puntos clave de venta de tu perfil.
-    - [Recomendado] Agrega una sección de "acerca de mí" o una introducción adaptada para cada empresa.
-      - Esta introducción debe responder explícita o implícitamente la pregunta "¿Por qué debería la empresa XXX contratarme?"
-    - No incluyas imágenes ni fotos de perfil. Esto es tabú para empresas de EE. UU.
-    - Pasa siempre tu contenido por Grammarly. Los errores tipográficos provocan el rechazo.
+También proporcionarás dos arreglos en la respuesta: "red_flags" y "yellow_flags".
+Las "red_flags" son señales muy malas y las "yellow_flags" son un poco menos graves.
 
-  - NO HACER
-    - No hagas currículums personalizados ni uses herramientas desactualizadas como Word.
-    - Evita estrategias de "disparar a todo" (Spray & Pray).
-    - No agregues imágenes ni fotos.
-    - No excedas una página.
-    - No uses Hotmail como proveedor de correo.
-    - No incluyas un enlace a GitHub si no tienes proyectos, contribuciones significativas o actividad.
+La respuesta será en este formato EXACTAMENTE, reemplazando el texto dentro de los #, evita cualquier salto de línea y envuelve las oraciones entre comillas como estas "",
+la respuesta DEBE SER JSON:
 
-  También proporcionarás dos arreglos en la respuesta: "red_flags" y "yellow_flags".
-  Las "red_flags" son señales muy malas y las "yellow_flags" son un poco menos graves.
-
-  La respuesta será en este formato EXACTAMENTE, reemplazando el texto dentro de los #, evita cualquier salto de línea y envuelve las oraciones entre comillas como estas "",
-  la respuesta DEBE SER JSON:
-
-  {
-    "grade": #GRADE#,
-    "red_flags": [#red_flag_1#, #red_flag_2#],
-    "yellow_flags": [#yellow_flag_1#, #yellow_flag_2#],
-    "review": #General review#
-  }
+{
+  "grade": #GRADE#,
+  "red_flags": [#red_flag_1#, #red_flag_2#],
+  "yellow_flags": [#yellow_flag_1#, #yellow_flag_2#],
+  "review": #General review#
+}
 `;
 
-function userPrompt(text: string) {
-  return `
+const userPrompt = `
 Por favor, evalúa este currículum y proporciona una calificación que vaya de F a A, con S para currículums excepcionalmente buenos.
-Además, ofrece comentarios detallados sobre cómo se puede mejorar el currículum. Ten en cuenta que, al extraer el texto del archivo PDF,
-parte del formato (principalmente los espacios) puede perderse, así que no tomes eso en cuenta.
+Además, ofrece comentarios detallados sobre cómo se puede mejorar el currículum.
 
 La respuesta debe dirigirse a mí, por lo que en lugar de hablar "sobre el candidato", comunícate directamente conmigo para darme los consejos.
 
-Sigue estas guías:
-
+Sigue estas guía:
+--- Comienzo de guía ---
 - Formato
-  - Usa una plantilla
-    - Google Docs tiene una plantilla inicial sólida que es fácil de usar y estética.
-    - Las empresas en EE. UU. prefieren currículums de estilo Latex (Latex-style).
-        - Creador de estilo Latex como https://typst.app/ - Usa plantillas como modern-pro, imprecv, modern-cv, o basic-resume.
-        - Creador estilo Latex en Overleaf, por ejemplo, esta plantilla.
-    - Diseños personalizados y palabras innecesarias son motivo de degradación inmediata y rechazo.
-  - Debe caber en una sola página.
-- Contenido Principal
-  - El currículum debe ser consistente, pero no idéntico, a tu perfil de LinkedIn.
-      - Las discrepancias generan preocupaciones, y las preocupaciones llevan al rechazo.
-  - Ajusta tu currículum a la empresa objetivo.
-      - Revisa los perfiles existentes de la empresa y haz que coincidan. Estos son los “ganadores”.
-      - Cambia los títulos de los trabajos, el contenido, el mensaje y las habilidades para que se ajusten mejor a lo que la empresa está buscando.
-      - Debes contar una breve historia que destaque los puntos clave de venta de tu perfil.
-  - [Recomendado] Agrega una sección de "acerca de mí" o una introducción adaptada para cada empresa.
-    - Esta introducción debe responder explícita o implícitamente la pregunta "¿Por qué debería la empresa XXX contratarme?"
-  - No incluyas imágenes ni fotos de perfil. Esto es tabú para empresas de EE. UU.
-  - Pasa siempre tu contenido por Grammarly. Los errores tipográficos provocan el rechazo.
-
-- NO HACER
-  - No hagas currículums personalizados ni uses herramientas desactualizadas como Word.
-  - Evita estrategias de "disparar a todo" (Spray & Pray).
-  - No agregues imágenes ni fotos.
-  - No excedas una página.
-  - No uses Hotmail como proveedor de correo.
-  - No incluyas un enlace a GitHub si no tienes proyectos, contribuciones significativas o actividad.
-
-
-${text}
+  - Usá un template
+    - Google Docs tiene una buena plantilla para empezar que es fácil de usar y está bien estéticamente
+    - A las empresas en USA les gusta el CV en estilo Latex, podés usar:
+      - un builder estilo Latex como Typst y elegí un template como modern-pro, imprecv, modern-cv, o basic-resume, o
+      - un builder Latex-style como Overleaf y elegí este template.
+  - Los diseños creativos y entregados en Word le bajan la calidad a tu CV y hasta pueden llegar a ser motivos de rechazo.
+  - Tiene que ser en una sola página.
+- Contenido principal
+  - Editá tu CV de acuerdo a la empresa que lo estés mandando:
+    - Mirá perfiles de Linkedin de personas que trabajan en la empresa y copialos, estos son los “ganadores”.
+    - Cambiá nombres de las posiciones, contenido, mensajes y habilidades para tratar de que se ajusten más a lo que la empresa está buscando.
+    - Querés contar una historia que resalte los principales puntos fuertes de tu perfil.
+  - [Recomendado] Agregá una introducción o “acerca de” que acomodes para cada empresa.
+    - Esta introducción debería responder explícita o implícitamente a la pregunta de “Por qué la empresa XXX debería contratarme”.
+  - No incluyas imágenes ni foto de perfil. Esto es tabú para empresas en USA.
+  - Cada vez que edites el contenido pasale Grammarly, errores de tipeo en el CV son inaceptables.
+- Lo que no tenés que hacer
+  - Crear templates propios o usar herramientas anticuadas como Word.
+  - Evitar estrategias tipo “spray & pray” (usar el mismo CV genérico, indistintamente para todas tus postulaciones).
+  - Agregar imágenes y fotos.
+  - Tener más de una página.
+  - Usar una dirección de email @hotmail.
+  - Incluir un link a GitHub que no tengas proyectos, aportes importantes o actividad.
+  - No escribas el currículum en español
+--- Fin de guía ---
 `;
-}
-
-function cleanupPrompt(text: string) {
-  return `
-The following text was extracted from a PDF file and it has some formatting issues, I want you to fix them, add spaces and linebreaks where necessary
-You will respond with the formatted text and nothing else, do not add any character that is not in the submitted text other than a space or a linebreak
-
-This is the text:
-
-
-${text}
-`;
-}
 
 type ResponseData = z.infer<typeof ResponseSchema> | { error: string };
 
@@ -149,17 +169,70 @@ export default async function handler(
       );
     }
 
-    const pdf = await pdfParse(pdfBuffer);
-
-    const clean = await generateText({
-      model: openai("gpt-4o-mini"),
-      prompt: cleanupPrompt(pdf.text),
-    });
-
     const completion = await generateObject({
-      model: openai("gpt-4o-mini"),
-      system: sysPrompt,
-      prompt: userPrompt(clean.text),
+      model: google("gemini-1.5-pro"),
+      temperature: 0.2,
+      messages: [
+        { role: "system", content: sysPrompt },
+        {
+          role: "user",
+          content: [
+            { type: "text", text: userPrompt },
+            {
+              type: "file",
+              data: fs.readFileSync(
+                path.join(process.cwd(), "public/victor_vigon.pdf"),
+              ),
+              mimeType: "application/pdf",
+            },
+          ],
+        },
+        {
+          role: "assistant",
+          content: JSON.stringify(vigonResponse),
+        },
+        {
+          role: "user",
+          content: [
+            { type: "text", text: userPrompt },
+            {
+              type: "file",
+              data: fs.readFileSync(
+                path.join(process.cwd(), "public/resume_silverdev.pdf"),
+              ),
+              mimeType: "application/pdf",
+            },
+          ],
+        },
+        {
+          role: "assistant",
+          content: JSON.stringify(silverResponse),
+        },
+        {
+          role: "user",
+          content: [
+            { type: "text", text: userPrompt },
+            {
+              type: "file",
+              data: fs.readFileSync(
+                path.join(process.cwd(), "public/bad_resume.pdf"),
+              ),
+              mimeType: "application/pdf",
+            },
+          ],
+        },
+        {
+          role: "assistant",
+          content: JSON.stringify(badResumeResponse),
+        },
+        {
+          role: "user",
+          content: [
+            { type: "text", text: userPrompt },
+            { type: "file", data: pdfBuffer, mimeType: "application/pdf" },
+          ],
+        },
+      ],
       schema: ResponseSchema,
     });
 

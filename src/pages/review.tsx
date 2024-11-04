@@ -11,10 +11,12 @@ function isFormState(data?: unknown): data is FormState {
 }
 
 export default function Review() {
-  const [data] = useMutationState({
+  const mutations = useMutationState({
     filters: { mutationKey: ["resume-check"] },
     select: (mutation) => mutation.state.data,
   });
+
+  const data = mutations[mutations.length - 1];
 
   return (
     <div className="mt-6 animate-fly-in container mx-auto px-4">
@@ -23,22 +25,30 @@ export default function Review() {
           <h2 className="text-2xl mb-4">Score: {data?.grade}</h2>
           <h3 className="text-xl mt-4 mb-2">Review</h3>
           <p>{data?.review}</p>
-          <h3 className="text-xl mt-4 mb-2">Red flags</h3>
-          <ul className="pl-6">
-            {data?.red_flags.map((flag) => (
-              <li className="list-disc" key={flag}>
-                {flag}
-              </li>
-            ))}
-          </ul>
-          <h3 className="text-xl mt-4 mb-2">Yellow flags</h3>
-          <ul className="pl-6">
-            {data?.yellow_flags.map((flag) => (
-              <li className="list-disc" key={flag}>
-                {flag}
-              </li>
-            ))}
-          </ul>
+          {data?.red_flags.length > 0 ? (
+            <>
+              <h3 className="text-xl mt-4 mb-2">Red flags</h3>
+              <ul className="pl-6">
+                {data?.red_flags.map((flag) => (
+                  <li className="list-disc" key={flag}>
+                    {flag}
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
+          {data?.yellow_flags.length > 0 ? (
+            <>
+              <h3 className="text-xl mt-4 mb-2">Yellow flags</h3>
+              <ul className="pl-6">
+                {data?.yellow_flags.map((flag) => (
+                  <li className="list-disc" key={flag}>
+                    {flag}
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
         </>
       ) : (
         <div className="max-w-md px-4 mx-auto flex items-center justify-center">
