@@ -4,8 +4,18 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
-        <link rel="icon" type="image/png" href="favicon.ico" sizes="32x32" />
-        <link rel="icon" type="image/png" href="favicon.ico" sizes="16x16" />
+        <link
+          rel="icon"
+          type="image/png"
+          href="images/favicon.png"
+          sizes="32x32"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          href="images/favicon.png"
+          sizes="16x16"
+        />
       </Head>
       <body className="antialiased dark dark:text-gray-100">
         <Main />
