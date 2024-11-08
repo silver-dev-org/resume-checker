@@ -34,7 +34,9 @@ export default function Home() {
     mutationKey: ["resume-check"],
     mutationFn: async ({ url, formData }) => {
       if (url && (!url.startsWith("https") || !url.endsWith(".pdf"))) {
-        throw new Error("El URL tiene que empezar con 'https' y terminar con 'pdf'");
+        throw new Error(
+          "El URL tiene que empezar con 'https' y terminar con 'pdf'",
+        );
       }
 
       let res;
@@ -144,7 +146,7 @@ export default function Home() {
         ) : null}
       </form>
 
-      {mutation.isPending ? (
+      {true ? (
         <div className="mt-4 max-h-8 overflow-hidden">
           <div
             /** @ts-expect-error we are using css props the proper way */
@@ -153,9 +155,7 @@ export default function Home() {
           >
             {loadingSentences.map((s) => (
               <p
-                /** @ts-expect-error we are using css props the proper way */
-                style={{ "--to": s.length }}
-                className="h-8 m-0 relative overflow-hidden thinking w-max text-gray-600 text-center"
+                className="h-8 m-0 relative overflow-hidden animate-pulse w-full text-center"
                 key={s}
               >
                 {s}
