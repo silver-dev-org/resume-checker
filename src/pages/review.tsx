@@ -1,11 +1,17 @@
 import Score from "@/components/score";
+import { useFormState } from "@/hooks/form-context";
 import type { FormState } from "@/types";
-import { useMutationState } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-function isFormState(data?: unknown): data is FormState {
-  return !!data && typeof (data as FormState).grade === "string";
-}
+const loadingSentences = [
+  "Analizando tu CV...",
+  "Buscando áreas a mejorar...",
+  "Puntuando tus habilidades...",
+  "Generando sugerencias...",
+];
 
 function Flag({ color }: { color: string }) {
   return (
@@ -47,27 +53,114 @@ function Flag({ color }: { color: string }) {
   );
 }
 
+function getUrlFromFormData(formData?: FormData) {
+  if (!formData) return "";
+  const resume = formData.get("resume");
+  if (resume instanceof Blob) return URL.createObjectURL(resume);
+
+  return "";
+}
+
 export default function Review() {
-  const mutations = useMutationState({
-    filters: { mutationKey: ["resume-check"] },
-    select: (mutation) => [mutation.state.data, mutation.state.variables],
+  const router = useRouter();
+  const [formState] = useFormState();
+
+  const mutation = useMutation<
+    FormState,
+    Error,
+    | { url: string; formData?: undefined }
+    | { formData: FormData; url?: undefined }
+  >({
+    mutationKey: ["resume-check"],
+    mutationFn: async ({ url, formData }) => {
+      let res;
+
+      console.log("HI");
+
+      if (formData) {
+        res = await fetch("/api/grade", {
+          method: "POST",
+          body: formData,
+        });
+      } else {
+        res = await fetch("/api/grade?url=" + url, {
+          method: "POST",
+        });
+      }
+
+      if (!res.ok) {
+        throw new Error("Hubo un error inesperado");
+      }
+
+      return res.json();
+    },
+    onError: () => {
+      router.push("/");
+    },
   });
-  const [data, variables] = mutations[mutations.length - 1] || [];
+
+  useEffect(() => {
+    if (formState.url) {
+      mutation.mutateAsync({ url: formState.url });
+    } else if (formState.formData) {
+      mutation.mutateAsync({ formData: formState.formData });
+    } else {
+      router.push("/");
+    }
+    /* eslint-disable-next-line */
+  }, [formState.formData, formState.url]);
 
   return (
     <div className="mt-6 animate-fly-in container mx-auto px-4">
-      {isFormState(data) ? (
+      {mutation.isPending ? (
+        <div className="p-8 rounded-lg bg-gray-500/10 border-2 border-white/30 mb-8 mx-auto min-h-[300px] grid place-items-center">
+          <div className="max-h-8 overflow-hidden">
+            <div
+              /** @ts-expect-error we are using css props the proper way */
+              style={{ "--loading-steps": loadingSentences.length }}
+              className="animate-loading [--loading-steps]-[12]"
+            >
+              {loadingSentences.map((s) => (
+                <p
+                  className="h-8 m-0 relative overflow-hidden animate-pulse w-full text-center"
+                  key={s}
+                >
+                  {s}
+                </p>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <iframe
+          className="animate-fly-in rounded-lg overflow-hidden mb-8"
+          src={
+            formState.formData
+              ? getUrlFromFormData(formState.formData)
+              : formState.url
+          }
+          onLoad={(iframe) => {
+            // free memory
+            URL.revokeObjectURL((iframe.target as HTMLIFrameElement).src);
+          }}
+          width="100%"
+          height="300"
+        />
+      )}
+      <h2 className="text-2xl mb-4">Your resume score:</h2>
+      <div className="mb-4">
+        <Score letter={mutation?.data?.grade} />
+      </div>
+      {mutation.data ? (
         <>
-          <h2 className="text-2xl mb-4">Your resume score: {data?.grade}</h2>
-          <Score letter={data.grade} />
-          {data?.red_flags.length > 0 ? (
+          {mutation.data?.red_flags.length > 0 ? (
             <>
               <h3 className="text-xl mt-4 mb-2">
                 <Flag color="#d22f27" />
                 Red flags
               </h3>
               <ul className="pl-6">
-                {data?.red_flags.map((flag) => (
+                {mutation.data?.red_flags.map((flag) => (
                   <li className="list-disc" key={flag}>
                     {flag}
                   </li>
@@ -75,13 +168,13 @@ export default function Review() {
               </ul>
             </>
           ) : null}
-          {data?.yellow_flags.length > 0 ? (
+          {mutation.data?.yellow_flags.length > 0 ? (
             <>
               <h3 className="text-xl mt-4 mb-2 flex gap-2 items-center">
                 <Flag color="#bada55" /> Yellow flags
               </h3>
               <ul className="pl-6">
-                {data?.yellow_flags.map((flag) => (
+                {mutation.data?.yellow_flags.map((flag) => (
                   <li className="list-disc" key={flag}>
                     {flag}
                   </li>
@@ -90,20 +183,7 @@ export default function Review() {
             </>
           ) : null}
         </>
-      ) : (
-        <div className="max-w-md px-4 mx-auto flex items-center justify-center">
-          <h2 className="text-2xl text-center">
-            Hubo un error al procesar los datos, volvé{" "}
-            <Link
-              href="/"
-              className="text-indigo-400 hover:text-indigo-300 cursor-pointer"
-            >
-              atrás
-            </Link>{" "}
-            y probá de nuevo!
-          </h2>
-        </div>
-      )}
+      ) : null}
 
       <hr className="w-full my-8" />
 

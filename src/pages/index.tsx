@@ -1,10 +1,14 @@
 import Link from "next/link";
-import type { FormState } from "@/types";
-import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import { ChangeEvent, FormEvent, useCallback, useEffect } from "react";
+import {
+  ChangeEvent,
+  FormEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { useDropzone } from "react-dropzone";
-import Score from "@/components/score";
+import { useFormState } from "@/hooks/form-context";
 
 function usePasteEvent(pasteListener: (event: ClipboardEvent) => void) {
   useEffect(() => {
@@ -16,53 +20,10 @@ function usePasteEvent(pasteListener: (event: ClipboardEvent) => void) {
   }, [pasteListener]);
 }
 
-const loadingSentences = [
-  "Analizando tu CV...",
-  "Buscando áreas a mejorar...",
-  "Puntuando tus habilidades...",
-  "Generando sugerencias...",
-];
-
 export default function Home() {
   const router = useRouter();
-
-  const mutation = useMutation<
-    FormState,
-    Error,
-    | { url: string; formData?: undefined }
-    | { formData: FormData; url?: undefined }
-  >({
-    mutationKey: ["resume-check"],
-    mutationFn: async ({ url, formData }) => {
-      if (url && (!url.startsWith("https") || !url.endsWith(".pdf"))) {
-        throw new Error(
-          "El URL tiene que empezar con 'https' y terminar con 'pdf'",
-        );
-      }
-
-      let res;
-
-      if (formData) {
-        res = await fetch("/api/grade", {
-          method: "POST",
-          body: formData,
-        });
-      } else {
-        res = await fetch("/api/grade?url=" + url, {
-          method: "POST",
-        });
-      }
-
-      if (!res.ok) {
-        throw new Error("Hubo un error inesperado");
-      }
-
-      return res.json();
-    },
-    onSuccess: () => {
-      router.push("/review");
-    },
-  });
+  const [error, setError] = useState<Error | null>(null);
+  const [, setFormState] = useFormState();
 
   const onDrop = useCallback(
     (files: File[]) => {
@@ -72,9 +33,10 @@ export default function Home() {
       if (!cvFile) return;
 
       formData.set("resume", cvFile);
-      mutation.mutate({ formData });
+      setFormState({ formData });
+      router.push("/review");
     },
-    [mutation],
+    [router, setFormState],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -91,7 +53,14 @@ export default function Home() {
     }
 
     const url = data.getData("text").toString();
-    mutation.mutate({ url });
+    if (!url.startsWith("https") || !url.endsWith(".pdf")) {
+      setError(
+        new Error("El URL tiene que empezar con 'https' y terminar con 'pdf'"),
+      );
+      return;
+    }
+    setFormState({ url });
+    router.push("/review");
   });
 
   async function handleFormSubmission(event: ChangeEvent) {
@@ -104,7 +73,8 @@ export default function Home() {
       return;
     }
 
-    mutation.mutate({ formData });
+    setFormState({ formData });
+    router.push("/review");
   }
 
   function prevent(event: FormEvent) {
@@ -118,9 +88,9 @@ export default function Home() {
       }
       {...getRootProps()}
     >
-      {mutation.error ? (
+      {error ? (
         <div className="p-6 bg-red-500/60 rounded-lg w-full self-start animate-fly-in">
-          <p className="text-center">{mutation.error.message}</p>
+          <p className="text-center">{error.message}</p>
         </div>
       ) : (
         <span />
@@ -130,10 +100,10 @@ export default function Home() {
         method="POST"
         action="/api/grade"
         encType="multipart/form-data"
-        className={`w-full overflow-hidden h-full p-8 relative border-2 rounded-lg ${isDragActive ? "cursor-grabbing border-gray-400" : "border-gray-800"}  border-dashed flex items-center justify-center flex-col gap-1 ${mutation.isPending ? "animate-pulse" : ""}`}
+        className={`w-full overflow-hidden h-full p-8 relative border-2 rounded-lg ${isDragActive ? "cursor-grabbing border-gray-400" : "border-gray-800"}  border-dashed flex items-center justify-center flex-col gap-1`}
       >
         <span
-          className={`px-10 py-2 block rounded-lg bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer ${mutation.isPending ? "bg-gray-700 text-gray-400" : ""}`}
+          className={`px-10 py-2 block rounded-lg bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer`}
         >
           Upload
         </span>
@@ -143,7 +113,6 @@ export default function Home() {
         <input
           className="sr-only"
           onChange={handleFormSubmission}
-          disabled={mutation.isPending}
           id="resume"
           name="resume"
           {...getInputProps()}
@@ -152,24 +121,6 @@ export default function Home() {
         <input className="sr-only" type="text" name="name" />
       </form>
 
-      {mutation.isPending ? (
-        <div className="mt-4 max-h-8 overflow-hidden">
-          <div
-            /** @ts-expect-error we are using css props the proper way */
-            style={{ "--loading-steps": loadingSentences.length }}
-            className="animate-loading"
-          >
-            {loadingSentences.map((s) => (
-              <p
-                className="h-8 m-0 relative overflow-hidden animate-pulse w-full text-center"
-                key={s}
-              >
-                {s}
-              </p>
-            ))}
-          </div>
-        </div>
-      ) : null}
       <p className="text-center mt-6">
         Resume checker está entrenado por recruiters e ingenieros de{" "}
         <Link

@@ -13,7 +13,7 @@ export default function Score({ letter }: { letter?: string }) {
     <ul className="flex gap-4 justify-evenly">
       {Object.keys(letterColors).map((l) => (
         <li
-          className={`transition-colors w-20 h-20 rounded-lg grid place-items-center border-2 border-white/30 ${letter === l ? letterColors[l as keyof typeof letterColors] : "bg-gray-500/40"}`}
+          className={`transition-colors duration-300 w-20 h-20 rounded-lg grid place-items-center border-2 border-white/30 ${letter === l ? letterColors[l as keyof typeof letterColors] : "bg-gray-500/40"}`}
           key={l}
         >
           <span className="text-xl font-bold">{l}</span>
