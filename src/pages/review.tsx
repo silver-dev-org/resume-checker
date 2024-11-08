@@ -131,7 +131,7 @@ export default function Review() {
         </div>
       ) : (
         <iframe
-          className="animate-fly-in rounded-lg overflow-hidden mb-8"
+          className="rounded-lg overflow-hidden mb-8"
           src={
             formState.formData
               ? getUrlFromFormData(formState.formData)
@@ -149,62 +149,60 @@ export default function Review() {
       <div className="mb-4">
         <Score letter={mutation?.data?.grade} />
       </div>
-      {mutation.data ? (
-        <>
-          {mutation.data?.red_flags.length > 0 ? (
-            <>
-              <h3 className="text-xl mt-4 mb-2 flex gap-2 items-center">
-                <Flag color="#d22f27" />
-                Red flags
-              </h3>
-              <ul className="pl-6">
-                {mutation.data?.red_flags.map((flag) => (
-                  <li className="list-disc" key={flag}>
-                    {flag}
-                  </li>
-                ))}
-              </ul>
-            </>
-          ) : null}
-          {mutation.data?.yellow_flags.length > 0 ? (
-            <>
-              <h3 className="text-xl mt-4 mb-2 flex gap-2 items-center">
-                <Flag color="#bada55" /> Yellow flags
-              </h3>
-              <ul className="pl-6">
-                {mutation.data?.yellow_flags.map((flag) => (
-                  <li className="list-disc" key={flag}>
-                    {flag}
-                  </li>
-                ))}
-              </ul>
-            </>
-          ) : null}
-        </>
-      ) : null}
+      <div className={`opacity-0 ${mutation.data ? "animate-fly-in" : ""}`}>
+        {mutation.data && mutation.data?.red_flags.length > 0 ? (
+          <>
+            <h3 className="text-xl mt-4 mb-2 flex gap-2 items-center">
+              <Flag color="#d22f27" />
+              Red flags
+            </h3>
+            <ul className="pl-6">
+              {mutation.data?.red_flags.map((flag) => (
+                <li className="list-disc" key={flag}>
+                  {flag}
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : null}
+        {mutation.data && mutation.data?.yellow_flags.length > 0 ? (
+          <>
+            <h3 className="text-xl mt-4 mb-2 flex gap-2 items-center">
+              <Flag color="#bada55" /> Yellow flags
+            </h3>
+            <ul className="pl-6">
+              {mutation.data?.yellow_flags.map((flag) => (
+                <li className="list-disc" key={flag}>
+                  {flag}
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : null}
 
-      <hr className="w-full my-8" />
+        <hr className="w-full my-8" />
 
-      <iframe
-        className="rounded-lg shadow-lg mt-4 max-w-xs md:max-w-none mx-auto"
-        width="560"
-        height="315"
-        src="https://www.youtube.com/embed/D-OYA2UzlJQ?si=p3dHHaOvHH8VrN1Z"
-        title="YouTube video player"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerPolicy="strict-origin-when-cross-origin"
-        allowFullScreen
-      ></iframe>
+        <iframe
+          className="rounded-lg shadow-lg mt-4 max-w-xs md:max-w-none mx-auto"
+          width="560"
+          height="315"
+          src="https://www.youtube.com/embed/D-OYA2UzlJQ?si=p3dHHaOvHH8VrN1Z"
+          title="YouTube video player"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen
+        ></iframe>
 
-      <p className="mt-8 text-center">
-        Revisá tu LinkedIn y mucho más en{" "}
-        <Link
-          href="https://ready.silver.dev"
-          className="text-indigo-400 hover:text-indigo-300 cursor-pointer"
-        >
-          ready.silver.dev
-        </Link>
-      </p>
+        <p className="mt-8 text-center">
+          Revisá tu LinkedIn y mucho más en{" "}
+          <Link
+            href="https://ready.silver.dev"
+            className="text-indigo-400 hover:text-indigo-300 cursor-pointer"
+          >
+            ready.silver.dev
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
