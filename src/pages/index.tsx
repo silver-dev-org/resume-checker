@@ -146,7 +146,7 @@ export default function Home() {
         ) : null}
       </form>
 
-      {true ? (
+      {mutation.isPending ? (
         <div className="mt-4 max-h-8 overflow-hidden">
           <div
             /** @ts-expect-error we are using css props the proper way */
