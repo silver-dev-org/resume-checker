@@ -118,8 +118,8 @@ export default function Home() {
       {...getRootProps()}
     >
       {mutation.error ? (
-        <div>
-          <p className="text-red-500 mb-2">{mutation.error.message}</p>
+        <div className="p-6 bg-red-500/60 rounded-lg w-full mb-6">
+          <p className="text-center">{mutation.error.message}</p>
         </div>
       ) : null}
       <form
