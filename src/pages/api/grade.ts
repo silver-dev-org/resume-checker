@@ -167,7 +167,7 @@ export default async function handler(
 
     const completion = await generateObject({
       model: google("gemini-1.5-pro"),
-      temperature: 0.2,
+      temperature: 0,
       messages: [
         { role: "system", content: sysPrompt },
         {
