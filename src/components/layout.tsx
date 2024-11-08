@@ -15,8 +15,9 @@ export default function Layout({ children }: { children: ReactNode }) {
       <Head>
         <title>Resume checker</title>
       </Head>
-      <header className="grid border-b-gray-800 border-b-solid border-b-2 px-4 py-8 grid-cols-6 items-start">
-        <Link href="/" className="text-xl">
+      <header className="flex border-b-gray-800 border-b-solid border-b-2 px-4 py-8">
+        <Link href="/" className="text-xl flex gap-4">
+          <Image src="/images/icon.png" alt="Icon." width={30} height={30} />{" "}
           Resume Checker
         </Link>
       </header>
