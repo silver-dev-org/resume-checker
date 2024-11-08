@@ -75,8 +75,6 @@ export default function Review() {
     mutationFn: async ({ url, formData }) => {
       let res;
 
-      console.log("HI");
-
       if (formData) {
         res = await fetch("/api/grade", {
           method: "POST",
@@ -89,7 +87,7 @@ export default function Review() {
       }
 
       if (!res.ok) {
-        throw new Error("Hubo un error inesperado");
+        throw new Error("Hubo un error inesperado, probá de nuevo");
       }
 
       return res.json();
@@ -101,9 +99,9 @@ export default function Review() {
 
   useEffect(() => {
     if (formState.url) {
-      mutation.mutateAsync({ url: formState.url });
+      mutation.mutate({ url: formState.url });
     } else if (formState.formData) {
-      mutation.mutateAsync({ formData: formState.formData });
+      mutation.mutate({ formData: formState.formData });
     } else {
       router.push("/");
     }
@@ -155,7 +153,7 @@ export default function Review() {
         <>
           {mutation.data?.red_flags.length > 0 ? (
             <>
-              <h3 className="text-xl mt-4 mb-2">
+              <h3 className="text-xl mt-4 mb-2 flex gap-2 items-center">
                 <Flag color="#d22f27" />
                 Red flags
               </h3>

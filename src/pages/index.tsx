@@ -9,6 +9,7 @@ import {
 } from "react";
 import { useDropzone } from "react-dropzone";
 import { useFormState } from "@/hooks/form-context";
+import { useMutationState } from "@tanstack/react-query";
 
 function usePasteEvent(pasteListener: (event: ClipboardEvent) => void) {
   useEffect(() => {
@@ -81,6 +82,13 @@ export default function Home() {
     event.preventDefault();
   }
 
+  const mutations = useMutationState({
+    filters: { mutationKey: ["resume-check"] },
+    select: (mutation) => mutation.state.error,
+  });
+
+  const mutationError = mutations[mutations.length - 1];
+
   return (
     <div
       className={
@@ -88,9 +96,12 @@ export default function Home() {
       }
       {...getRootProps()}
     >
-      {error ? (
+      {error || mutationError ? (
         <div className="p-6 bg-red-500/60 rounded-lg w-full self-start animate-fly-in">
-          <p className="text-center">{error.message}</p>
+          {error ? <p className="text-center">{error.message}</p> : null}
+          {mutationError ? (
+            <p className="text-center">{mutationError.message}</p>
+          ) : null}
         </div>
       ) : (
         <span />
