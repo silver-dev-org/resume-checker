@@ -112,23 +112,31 @@ export default function Home() {
 
   return (
     <div
-      className={`container items-center justify-start flex flex-col h-full p-8 border-4 rounded-xl ${isDragActive ? "cursor-grabbing border-gray-300 border-dashed" : "border-transparent"}`}
+      className={
+        "container items-center justify-start flex flex-col h-full p-8"
+      }
       {...getRootProps()}
     >
+      {mutation.error ? (
+        <div>
+          <p className="text-red-500 mb-2">{mutation.error.message}</p>
+        </div>
+      ) : null}
       <form
         onSubmit={prevent}
         method="POST"
         action="/api/grade"
         encType="multipart/form-data"
-        className={`w-full overflow-hidden max-w-[300px] p-8 relative border-2 rounded-lg border-gray-800 border-dashed flex items-center justify-center flex-col gap-1 ${mutation.isPending ? "animate-pulse" : ""}`}
+        className={`w-full overflow-hidden h-full p-8 relative border-2 rounded-lg ${isDragActive ? "cursor-grabbing border-gray-400" : "border-gray-800"}  border-dashed flex items-center justify-center flex-col gap-1 ${mutation.isPending ? "animate-pulse" : ""}`}
       >
         <span
           className={`px-4 py-2 block rounded-xl bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer ${mutation.isPending ? "bg-gray-700 text-gray-400" : ""}`}
         >
-          Buscar
+          Upload
         </span>
-        <span className="text-gray-300 mt-4">o arrastrá un archivo,</span>
-        <span className="text-gray-300 text-sm">o pegá un url</span>
+        <span className="text-gray-300 mt-4 text-center">
+          Subí tu currículum para recibir feedback instantáneo
+        </span>
         <input
           className="sr-only"
           onChange={handleFormSubmission}
@@ -139,11 +147,6 @@ export default function Home() {
         />
         {/* honeypot */}
         <input className="sr-only" type="text" name="name" />
-        {mutation.error ? (
-          <div>
-            <p className="text-red-500 mb-2">{mutation.error.message}</p>
-          </div>
-        ) : null}
       </form>
 
       {mutation.isPending ? (
@@ -165,12 +168,19 @@ export default function Home() {
         </div>
       ) : null}
       <p className="text-center mt-6">
-        Revisá tu curriculum basado en las guías de{" "}
+        Resume checker está entrenado por recruiters e ingenieros de{" "}
+        <Link
+          href="https://silver.dev/"
+          className="text-indigo-400 cursor-pointer hover:text-indigo-300"
+        >
+          Silver.dev
+        </Link>{" "}
+        y la{" "}
         <Link
           href="https://docs.silver.dev/interview-ready/getting-started/preparando-el-CV"
           className="text-indigo-400 cursor-pointer hover:text-indigo-300"
         >
-          Silver.dev
+          guía de recruiting
         </Link>
       </p>
     </div>
