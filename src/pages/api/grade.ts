@@ -14,7 +14,6 @@ const vigonResponse = {
     grade: "A",
     yellow_flags: [],
     red_flags: [],
-    review: `Tu currículum tiene un buen contenido y está bien estructurado, felicitaciones. Asegúrate de ajustar tu currículum a la empresa a la que aplicas, revisando sus perfiles y alineando tus experiencias y habilidades con lo que buscan. Además, considera agregar una sección de 'acerca de mí' más específica que responda a por qué deberían contratarte.`,
   },
 };
 
@@ -30,7 +29,6 @@ const silverResponse = {
       "Incluir la fecha de nacimiento, es innecesario y puede dar lugar a sesgos.",
       "Incluir detalles irrelevantes ('fluff') en la sección de Mercado Libre, lo que hace que el CV sea menos conciso y directo.",
     ],
-    review: `El CV de Gabriel tiene una estructura y contenido sólidos, pero hay algunos puntos importantes que pueden mejorarse para adaptarse mejor a las expectativas del mercado laboral en EE. UU.`,
   },
 };
 
@@ -44,16 +42,15 @@ const badResumeResponse = {
       "Representación de habilidades en porcentajes: Mostrar habilidades con porcentajes es desaconsejable, ya que no comunica de manera clara el nivel real de competencia y puede dar lugar a malinterpretaciones. Se prefiere un formato que indique los conocimientos y experiencia de forma descriptiva.",
     ],
     yellow_flags: [],
-    review: `Recomiendo ajustar el formato y revisar cuidadosamente la redacción para maximizar las oportunidades en el mercado laboral de EE.UU.`,
   },
 };
 
 const sysPrompt = `
-Eres un asesor profesional y reclutador experto con amplia experiencia en revisar y analizar currículums.
+Sos un asesor profesional y reclutador experto con amplia experiencia en revisar y analizar currículums.
 Tu objetivo es evaluar el contenido, el formato y el impacto de los currículums enviados por los solicitantes de empleo.
 Proporcionas retroalimentación constructiva, una calificación de F a A, y S para un currículum excepcionalmente bueno, junto con sugerencias específicas para mejorar.
 
-Sigue estas guía:
+Seguí estas guía:
 --- Comienzo de guía ---
 - Formato
   - Usá un template
@@ -86,23 +83,23 @@ También proporcionarás dos arreglos en la respuesta: "red_flags" y "yellow_fla
 Las "red_flags" son señales muy malas y las "yellow_flags" son un poco menos graves.
 
 La respuesta será en este formato EXACTAMENTE, reemplazando el texto dentro de los #, evita cualquier salto de línea y envuelve las oraciones entre comillas como estas "",
+la respuesta debe ser en español argentino/rio-platense,
 la respuesta DEBE SER JSON:
 
 {
   "grade": #GRADE#,
   "red_flags": [#red_flag_1#, #red_flag_2#],
   "yellow_flags": [#yellow_flag_1#, #yellow_flag_2#],
-  "review": #General review#
 }
 `;
 
 const userPrompt = `
-Por favor, evalúa este currículum y proporciona una calificación que vaya de F a A, con S para currículums excepcionalmente buenos.
+Por favor, evaluá este currículum y proporciona una calificación que vaya de F a A, con S para currículums excepcionalmente buenos.
 Además, ofrece comentarios detallados sobre cómo se puede mejorar el currículum.
 
-La respuesta debe dirigirse a mí, por lo que en lugar de hablar "sobre el candidato", comunícate directamente conmigo para darme los consejos.
+La respuesta debe dirigirse a mí, por lo que en lugar de hablar "sobre el candidato", comunícate directamente conmigo para darme los consejos y debe ser en español argentino/rio-platense.
 
-Sigue estas guía:
+Seguí estas guía:
 --- Comienzo de guía ---
 - Formato
   - Usá un template
