@@ -135,7 +135,6 @@ const ResponseSchema = z.object({
   grade: z.enum(["S", "A", "B", "C", "D", "E", "F"]),
   red_flags: z.array(z.string()),
   yellow_flags: z.array(z.string()),
-  review: z.string(),
 });
 
 export default async function handler(

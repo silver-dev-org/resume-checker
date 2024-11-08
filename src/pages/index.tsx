@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { ChangeEvent, FormEvent, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
+import Score from "@/components/score";
 
 function usePasteEvent(pasteListener: (event: ClipboardEvent) => void) {
   useEffect(() => {
@@ -113,15 +114,17 @@ export default function Home() {
   return (
     <div
       className={
-        "container items-center justify-start flex flex-col h-full p-8"
+        "container grid grid-rows-[100px_1fr_auto] w-full h-full p-8 gap-6"
       }
       {...getRootProps()}
     >
       {mutation.error ? (
-        <div className="p-6 bg-red-500/60 rounded-lg w-full mb-6">
+        <div className="p-6 bg-red-500/60 rounded-lg w-full self-start animate-fly-in">
           <p className="text-center">{mutation.error.message}</p>
         </div>
-      ) : null}
+      ) : (
+        <span />
+      )}
       <form
         onSubmit={prevent}
         method="POST"
@@ -130,7 +133,7 @@ export default function Home() {
         className={`w-full overflow-hidden h-full p-8 relative border-2 rounded-lg ${isDragActive ? "cursor-grabbing border-gray-400" : "border-gray-800"}  border-dashed flex items-center justify-center flex-col gap-1 ${mutation.isPending ? "animate-pulse" : ""}`}
       >
         <span
-          className={`px-4 py-2 block rounded-xl bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer ${mutation.isPending ? "bg-gray-700 text-gray-400" : ""}`}
+          className={`px-10 py-2 block rounded-lg bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer ${mutation.isPending ? "bg-gray-700 text-gray-400" : ""}`}
         >
           Upload
         </span>
