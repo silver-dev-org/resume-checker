@@ -10,13 +10,13 @@ const letterColors = {
 
 export default function Score({ letter }: { letter?: string }) {
   return (
-    <ul className="flex gap-4 justify-evenly">
+    <ul className="flex gap-2 md:gap-4 justify-between flex-wrap">
       {Object.keys(letterColors).map((l) => (
         <li
-          className={`transition-colors duration-300 w-20 h-20 rounded-lg grid place-items-center border-2 border-white/30 ${letter === l ? letterColors[l as keyof typeof letterColors] : "bg-gray-500/40"}`}
+          className={`transition-colors duration-300 w-8 h-8 md:w-20 md:h-20 rounded-lg grid place-items-center border-2 border-white/30 ${letter === l ? letterColors[l as keyof typeof letterColors] : "bg-gray-500/40"}`}
           key={l}
         >
-          <span className="text-xl font-bold">{l}</span>
+          <span className="md:text-xl font-bold">{l}</span>
         </li>
       ))}
     </ul>

@@ -31,9 +31,9 @@ function Flag({ color }: { color: string }) {
           <polygon
             fill="none"
             stroke="#111"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
             points="67 24 36 33.5 5 43 5 24 5 5 36 14.5 67 24"
           />
           <line
@@ -43,9 +43,9 @@ function Flag({ color }: { color: string }) {
             y2="67"
             fill="none"
             stroke="#111"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
           />
         </g>
       </g>
@@ -146,7 +146,7 @@ export default function Review() {
         />
       )}
       <h2 className="text-2xl mb-4">Your resume score:</h2>
-      <div className="mb-4">
+      <div className="mb-8">
         <Score letter={mutation?.data?.grade} />
       </div>
       <div className={`opacity-0 ${mutation.data ? "animate-fly-in" : ""}`}>
@@ -158,7 +158,7 @@ export default function Review() {
             </h3>
             <ul className="pl-6">
               {mutation.data?.red_flags.map((flag) => (
-                <li className="list-disc" key={flag}>
+                <li className="list-disc mb-2 last:mb-0" key={flag}>
                   {flag}
                 </li>
               ))}
