@@ -7,7 +7,7 @@ const letterColors = {
 
 export default function Score({ letter }: { letter?: string }) {
   return (
-    <ul className="flex gap-4 md:gap-8 justify-center flex-wrap">
+    <ul className="flex gap-4 md:gap-8 flex-wrap">
       {Object.keys(letterColors).map((l) => (
         <li
           className={`transition-colors duration-300 w-16 h-16 md:w-20 md:h-20 rounded-lg grid place-items-center border-2 border-white/30 ${letter === l ? letterColors[l as keyof typeof letterColors] : "bg-gray-500/40"}`}
