@@ -96,11 +96,32 @@ export default function Home() {
 
       <div
         className={
-          "container grid grid-rows-[1fr_auto] w-full h-full p-8 gap-6 relative"
+          "container grid grid-rows-[auto_1fr] w-full h-full p-8 gap-12 relative"
         }
-        {...getRootProps()}
       >
+        <div>
+          <h1 className="text-center text-2xl mb-4">
+            Subí tu CV y recibí Feedback Instantáneo
+          </h1>
+          <p className="text-center">
+            Resume checker está entrenado por recruiters e ingenieros de{" "}
+            <Link
+              href="https://silver.dev/"
+              className="text-indigo-400 cursor-pointer hover:text-indigo-300"
+            >
+              Silver.dev
+            </Link>{" "}
+            y la{" "}
+            <Link
+              href="https://docs.silver.dev/interview-ready/getting-started/preparando-el-CV"
+              className="text-indigo-400 cursor-pointer hover:text-indigo-300"
+            >
+              guía de recruiting
+            </Link>
+          </p>
+        </div>
         <form
+          {...getRootProps()}
           onSubmit={prevent}
           method="POST"
           action="/api/grade"
@@ -123,23 +144,6 @@ export default function Home() {
           {/* honeypot */}
           <input className="sr-only" type="text" name="name" />
         </form>
-
-        <p className="text-center mt-6">
-          Resume checker está entrenado por recruiters e ingenieros de{" "}
-          <Link
-            href="https://silver.dev/"
-            className="text-indigo-400 cursor-pointer hover:text-indigo-300"
-          >
-            Silver.dev
-          </Link>{" "}
-          y la{" "}
-          <Link
-            href="https://docs.silver.dev/interview-ready/getting-started/preparando-el-CV"
-            className="text-indigo-400 cursor-pointer hover:text-indigo-300"
-          >
-            guía de recruiting
-          </Link>
-        </p>
       </div>
     </>
   );
