@@ -113,7 +113,7 @@ export default function Home() {
             </Link>{" "}
             y la{" "}
             <Link
-              href="https://docs.silver.dev/interview-ready/getting-started/preparando-el-CV"
+              href="https://docs.silver.dev/interview-ready/soft-fundamentals/preparando-el-cv#cv-checklist"
               className="text-indigo-400 cursor-pointer hover:text-indigo-300"
             >
               guía de recruiting

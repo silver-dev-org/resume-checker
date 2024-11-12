@@ -173,11 +173,11 @@ export default function Review() {
         {mutation.data && mutation.data?.yellow_flags.length > 0 ? (
           <>
             <h3 className="text-xl mt-4 mb-2 flex gap-2 items-center">
-              <Flag color="#bada55" /> Yellow flags
+              <Flag color="#eff81a" /> Yellow flags
             </h3>
             <ul className="pl-6">
               {mutation.data?.yellow_flags.map((flag) => (
-                <li className="list-disc" key={flag}>
+                <li className="list-disc mb-2 last:mb-0" key={flag}>
                   {flag}
                 </li>
               ))}
