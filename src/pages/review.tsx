@@ -150,7 +150,7 @@ export default function Review() {
           </p>
         </object>
       )}
-      <h2 className="text-2xl mb-4">Your resume score:</h2>
+      <h2 className="text-2xl mb-4">Your Resume Score:</h2>
       <div className="mb-8">
         <Score letter={mutation?.data?.grade} />
       </div>
