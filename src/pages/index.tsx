@@ -102,11 +102,11 @@ export default function Home() {
 
       <div
         className={
-          "container grid grid-rows-[auto_1fr] w-full p-8 gap-12 relative max-w-4xl border border-gray-800/80 rounded-lg shadow-sm"
+          "container grid grid-rows-[auto_1fr] w-full h-full p-8 gap-12 relative justify-center"
         }
       >
-        <div>
-          <h1 className="text-center text-3xl font-bold mb-4">
+        <div className="lg:mt-16">
+          <h1 className="text-center text-3xl lg:text-5xl font-bold mb-4">
             Subí tu CV y recibí Feedback Instantáneo
           </h1>
           <p className="text-center text-black/80 dark:text-white/80">
@@ -126,14 +126,14 @@ export default function Home() {
             </Link>
           </p>
         </div>
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-4 lg:self-center max-w-4xl">
           <form
             {...getRootProps()}
             onSubmit={prevent}
             method="POST"
             action="/api/grade"
             encType="multipart/form-data"
-            className={`w-full overflow-hidden h-full p-8 relative border-2 rounded-lg ${isDragActive ? "cursor-grabbing border-gray-400" : "border-gray-800"}  border-dashed flex items-center justify-center flex-col gap-1`}
+            className={`w-full overflow-hidden md:col-span-3 h-full p-8 relative border-2 rounded-lg ${isDragActive ? "cursor-grabbing border-gray-400" : "border-gray-800"}  border-dashed flex items-center justify-center flex-col gap-1`}
           >
             <span className="px-10 py-2 text-center block rounded-lg bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer text-white">
               Hacé click para subir un archivo
@@ -152,10 +152,8 @@ export default function Home() {
             <input className="sr-only" type="text" name="name" />
           </form>
           <div className="self-end">
-            <p className="mb-4 text-center lg:text-left font-semibold">
-              O usá uno de nuestros ejemplos:
-            </p>
-            <div className="grid grid-cols-2 gap-4 justify-center lg:justify-start">
+            <p className="mb-4 text-center md:text-left">O usá un ejemplo:</p>
+            <div className="grid grid-cols-1 gap-4 justify-center lg:justify-start">
               {[
                 { letter: "s", name: "Victor Vigon" },
                 { letter: "a", name: "Gabriel Benmergui" },
