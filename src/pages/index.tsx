@@ -103,8 +103,8 @@ export default function Home() {
       <div
         className={"container grid w-full h-full p-8 relative justify-center"}
       >
-        <div className="grid gap-4 md:grid-cols-4 lg:self-center max-w-4xl">
-          <div className="md:col-span-4 mb-12">
+        <div className="grid gap-8 md:grid-cols-4 lg:self-center max-w-4xl">
+          <div className="md:col-span-4 md:mb-8">
             <h1 className="text-center text-3xl lg:text-5xl font-bold mb-4">
               Subí tu CV y recibí Feedback Instantáneo
             </h1>
