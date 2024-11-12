@@ -6,14 +6,14 @@ export default function Document() {
       <Head>
         <link
           rel="icon"
-          type="image/png"
-          href="images/favicon.png"
+          type="image/svg"
+          href="images/logo-white.svg"
           sizes="32x32"
         />
         <link
           rel="icon"
-          type="image/png"
-          href="images/favicon.png"
+          type="image/svg"
+          href="images/logo-white.svg"
           sizes="16x16"
         />
       </Head>
