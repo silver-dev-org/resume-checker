@@ -118,7 +118,7 @@ export default function Review() {
   return (
     <div className="mt-6 animate-fly-in container mx-auto px-4 grid lg:grid-cols-2 gap-6">
       {mutation.isPending ? (
-        <div className="p-8 rounded-lg bg-gray-500/10 border-2 border-black/30 dark:border-white/30 h-full grid place-items-center">
+        <div className="p-8 rounded-lg bg-gray-500/10 border-2 border-black/30 dark:border-white/30 h-full lg:min-h-96 grid place-items-center">
           <div className="max-h-8 overflow-hidden">
             <div
               /** @ts-expect-error we are using css props the proper way */
@@ -138,7 +138,7 @@ export default function Review() {
         </div>
       ) : (
         <object
-          className="rounded-lg overflow-hidden mb-8 border-2 border-black/30 dark:border-white/30 h-full"
+          className="rounded-lg overflow-hidden mb-8 border-2 border-black/30 dark:border-white/30 h-full lg:min-h-96"
           type="application/pdf"
           data={
             formState.formData
