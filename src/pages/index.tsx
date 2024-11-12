@@ -101,32 +101,30 @@ export default function Home() {
       <ErrorBadge error={error || mutationError} />
 
       <div
-        className={
-          "container grid grid-rows-[auto_1fr] w-full h-full p-8 gap-12 relative justify-center"
-        }
+        className={"container grid w-full h-full p-8 relative justify-center"}
       >
-        <div className="lg:mt-16">
-          <h1 className="text-center text-3xl lg:text-5xl font-bold mb-4">
-            Subí tu CV y recibí Feedback Instantáneo
-          </h1>
-          <p className="text-center text-black/80 dark:text-white/80">
-            Resume checker está entrenado por recruiters e ingenieros de{" "}
-            <Link
-              href="https://silver.dev/"
-              className="text-indigo-400 cursor-pointer hover:text-indigo-300"
-            >
-              Silver.dev
-            </Link>{" "}
-            y la{" "}
-            <Link
-              href="https://docs.silver.dev/interview-ready/soft-fundamentals/preparando-el-cv#cv-checklist"
-              className="text-indigo-400 cursor-pointer hover:text-indigo-300"
-            >
-              guía de recruiting
-            </Link>
-          </p>
-        </div>
         <div className="grid gap-4 md:grid-cols-4 lg:self-center max-w-4xl">
+          <div className="md:col-span-4 mb-12">
+            <h1 className="text-center text-3xl lg:text-5xl font-bold mb-4">
+              Subí tu CV y recibí Feedback Instantáneo
+            </h1>
+            <p className="text-center text-black/80 dark:text-white/80">
+              Resume checker está entrenado por recruiters e ingenieros de{" "}
+              <Link
+                href="https://silver.dev/"
+                className="text-indigo-400 cursor-pointer hover:text-indigo-300"
+              >
+                Silver.dev
+              </Link>{" "}
+              y la{" "}
+              <Link
+                href="https://docs.silver.dev/interview-ready/soft-fundamentals/preparando-el-cv#cv-checklist"
+                className="text-indigo-400 cursor-pointer hover:text-indigo-300"
+              >
+                guía de recruiting
+              </Link>
+            </p>
+          </div>
           <form
             {...getRootProps()}
             onSubmit={prevent}
