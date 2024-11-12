@@ -160,7 +160,7 @@ export default function Home() {
               ].map(({ letter, name }) => (
                 <button
                   key={letter}
-                  className="flex flex-col gap-2 text-center items-center justify-center p-4 rounded-lg border border-indigo-700/40 hover:border-indigo-500/40"
+                  className={`${letter} transition-colors flex flex-col gap-2 text-center items-center justify-center p-4 rounded-lg`}
                   onClick={() => submitWithResumeUrl(letter)}
                 >
                   <span className="font-semibold tracking-wider">{name}</span>
