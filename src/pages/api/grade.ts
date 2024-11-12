@@ -177,7 +177,7 @@ export default async function handler(
       }
       pdfBuffer = Buffer.concat(chunks);
     } else {
-      let { url } = req.query;
+      const { url } = req.query;
       if (!url || typeof url !== "string") {
         throw new Error("Either provide a file or a URL");
       }

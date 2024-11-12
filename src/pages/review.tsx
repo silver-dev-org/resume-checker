@@ -166,8 +166,8 @@ export default function Review() {
           {mutation.data && mutation.data?.red_flags.length > 0 ? (
             <>
               <h3 className="text-xl mt-4 mb-2 flex gap-2 items-center">
-                <Flag color="#d22f27" />
-                Red flags
+                <Flag color="#d22f27" />({mutation.data.red_flags.length}) Red
+                flag{mutation.data.red_flags.length > 1 ? "s" : ""}
               </h3>
               <ul className="pl-6">
                 {mutation.data?.red_flags.map((flag) => (
@@ -181,7 +181,8 @@ export default function Review() {
           {mutation.data && mutation.data?.yellow_flags.length > 0 ? (
             <>
               <h3 className="text-xl mt-4 mb-2 flex gap-2 items-center">
-                <Flag color="#eff81a" /> Yellow flags
+                <Flag color="#eff81a" /> ({mutation.data.yellow_flags.length})
+                Yellow flag{mutation.data.yellow_flags.length > 1 ? "s" : ""}
               </h3>
               <ul className="pl-6">
                 {mutation.data?.yellow_flags.map((flag) => (

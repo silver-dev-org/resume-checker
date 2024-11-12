@@ -11,14 +11,13 @@ type Letter = keyof typeof letterColors;
 
 const letterKeys = Object.keys(letterColors) as Array<Letter>;
 
-export default function Score({ letter }: { letter?: Letter }) {
-  const [currentLetter, setCurrentLetter] =
-    useState<keyof typeof letterColors>("C");
+export default function Score({ letter }: { letter?: string }) {
+  const [currentLetter, setCurrentLetter] = useState<Letter>("C");
 
   useEffect(() => {
     if (!letter) return;
     let index = letterKeys.indexOf(currentLetter);
-    const targetIndex = letterKeys.indexOf(letter);
+    const targetIndex = letterKeys.indexOf(letter as Letter);
 
     if (index < targetIndex) {
       const interval = setInterval(() => {
