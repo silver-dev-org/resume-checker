@@ -111,7 +111,7 @@ export default function Review() {
   return (
     <div className="mt-6 animate-fly-in container mx-auto px-4">
       {mutation.isPending ? (
-        <div className="p-8 rounded-lg bg-gray-500/10 border-2 border-white/30 mb-8 mx-auto min-h-[300px] grid place-items-center">
+        <div className="p-8 rounded-lg bg-gray-500/10 border-2 border-black/30 dark:border-white/30 mb-8 mx-auto min-h-[300px] grid place-items-center">
           <div className="max-h-8 overflow-hidden">
             <div
               /** @ts-expect-error we are using css props the proper way */
@@ -130,20 +130,25 @@ export default function Review() {
           </div>
         </div>
       ) : (
-        <iframe
-          className="rounded-lg overflow-hidden mb-8"
-          src={
+        <object
+          className="rounded-lg overflow-hidden mb-8 border-2 border-black/30 dark:border-white/30"
+          type="application/pdf"
+          data={
             formState.formData
               ? getUrlFromFormData(formState.formData)
               : formState.url
           }
-          onLoad={(iframe) => {
+          onLoad={(object) => {
             // free memory
-            URL.revokeObjectURL((iframe.target as HTMLIFrameElement).src);
+            URL.revokeObjectURL((object.target as HTMLObjectElement).data);
           }}
           width="100%"
           height="300"
-        />
+        >
+          <p className="flex w-full h-full text-center items-center justify-center">
+            Tu browser no permite PDFs.
+          </p>
+        </object>
       )}
       <h2 className="text-2xl mb-4">Your resume score:</h2>
       <div className="mb-8">

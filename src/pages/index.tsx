@@ -113,12 +113,10 @@ export default function Home() {
         encType="multipart/form-data"
         className={`w-full overflow-hidden h-full p-8 relative border-2 rounded-lg ${isDragActive ? "cursor-grabbing border-gray-400" : "border-gray-800"}  border-dashed flex items-center justify-center flex-col gap-1`}
       >
-        <span
-          className={`px-10 py-2 block rounded-lg bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer`}
-        >
+        <span className="px-10 py-2 block rounded-lg bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer text-white">
           Upload
         </span>
-        <span className="text-gray-300 mt-4 text-center">
+        <span className="text-gray-700 dark:text-gray-300 mt-4 text-center">
           Subí tu currículum para recibir feedback instantáneo
         </span>
         <input

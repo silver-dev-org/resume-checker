@@ -11,7 +11,7 @@ function isMultipartFormData(req: NextApiRequest) {
 
 const vigonResponse = {
   object: {
-    grade: "A",
+    grade: "S",
     yellow_flags: [],
     red_flags: [],
   },
@@ -19,7 +19,7 @@ const vigonResponse = {
 
 const silverResponse = {
   object: {
-    grade: "D",
+    grade: "B",
     yellow_flags: [
       "Incluir tecnologías en el título o subtítulo del CV, lo que hace que parezca menos profesional y más limitado.",
       "Usar un correo en Hotmail, proyecta una imagen anticuada.",
@@ -34,7 +34,7 @@ const silverResponse = {
 
 const badResumeResponse = {
   object: {
-    grade: "F",
+    grade: "C",
     red_flags: [
       "Formato y diseño: El CV parece no seguir el estilo recomendado para Estados Unidos (como Latex o un generador similar), lo que puede restarle profesionalismo. Optar por un formato como Typst o Overleaf con plantillas de estilo moderno daría una mejor impresión.",
       "Posible uso de Word u otro procesador anticuado: Si el CV fue hecho en Word o con un formato que no luce profesional, puede ser un motivo de rechazo en algunos casos.",
@@ -48,7 +48,7 @@ const badResumeResponse = {
 const sysPrompt = `
 Sos un asesor profesional y reclutador experto con amplia experiencia en revisar y analizar currículums.
 Tu objetivo es evaluar el contenido, el formato y el impacto de los currículums enviados por los solicitantes de empleo.
-Proporcionas retroalimentación constructiva, una calificación de F a A, y S para un currículum excepcionalmente bueno, junto con sugerencias específicas para mejorar.
+Proporcionas retroalimentación constructiva, una calificación de C a A, y S para un currículum excepcionalmente bueno, junto con sugerencias específicas para mejorar.
 
 Seguí estas guía:
 --- Comienzo de guía ---
@@ -94,7 +94,7 @@ la respuesta DEBE SER JSON:
 `;
 
 const userPrompt = `
-Por favor, evaluá este currículum y proporciona una calificación que vaya de F a A, con S para currículums excepcionalmente buenos.
+Por favor, evaluá este currículum y proporciona una calificación que vaya de C a A, con S para currículums excepcionalmente buenos.
 Además, ofrece comentarios detallados sobre cómo se puede mejorar el currículum.
 
 La respuesta debe dirigirse a mí, por lo que en lugar de hablar "sobre el candidato", comunícate directamente conmigo para darme los consejos y debe ser en español argentino/rio-platense.
@@ -132,7 +132,7 @@ Seguí estas guía:
 type ResponseData = z.infer<typeof ResponseSchema> | { error: string };
 
 const ResponseSchema = z.object({
-  grade: z.enum(["S", "A", "B", "C", "D", "E", "F"]),
+  grade: z.enum(["S", "A", "B", "C"]),
   red_flags: z.array(z.string()),
   yellow_flags: z.array(z.string()),
 });
