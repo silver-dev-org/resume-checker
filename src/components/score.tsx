@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 const letterColors = {
   C: "bg-yellow-400/50",
   B: "bg-green-400/50",
@@ -5,17 +7,37 @@ const letterColors = {
   S: "bg-gradient-to-tr from-pink-500 to-blue-500",
 } as const;
 
-export default function Score({ letter }: { letter?: string }) {
+type Letter = keyof typeof letterColors;
+
+const letterKeys = Object.keys(letterColors) as Array<Letter>;
+
+export default function Score({ letter }: { letter?: Letter }) {
+  const [currentLetter, setCurrentLetter] =
+    useState<keyof typeof letterColors>("C");
+
+  useEffect(() => {
+    if (!letter) return;
+    let index = letterKeys.indexOf(currentLetter);
+    const targetIndex = letterKeys.indexOf(letter);
+
+    if (index < targetIndex) {
+      const interval = setInterval(() => {
+        if (index < targetIndex) {
+          setCurrentLetter(letterKeys[++index]);
+        } else {
+          clearInterval(interval); // Clear interval when we reach the target
+        }
+      }, 300); // Adjust this delay for your animation speed
+
+      return () => clearInterval(interval); // Cleanup interval on component unmount
+    }
+  }, [letter, currentLetter]);
+
   return (
-    <ul className="flex gap-4 md:gap-8 flex-wrap">
-      {Object.keys(letterColors).map((l) => (
-        <li
-          className={`transition-colors duration-300 w-16 h-16 md:w-20 md:h-20 rounded-lg grid place-items-center border-2 border-white/30 ${letter === l ? letterColors[l as keyof typeof letterColors] : "bg-gray-500/40"}`}
-          key={l}
-        >
-          <span className="md:text-xl font-bold">{l}</span>
-        </li>
-      ))}
-    </ul>
+    <div
+      className={`transition-colors duration-300 w-16 h-16 md:w-20 md:h-20 rounded-lg grid place-items-center border-2 border-white/30 ${letterColors[currentLetter]}`}
+    >
+      <span className="md:text-xl font-bold">{currentLetter}</span>
+    </div>
   );
 }
