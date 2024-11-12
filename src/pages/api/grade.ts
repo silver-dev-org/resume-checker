@@ -9,7 +9,7 @@ function isMultipartFormData(req: NextApiRequest) {
   return req.headers["content-type"]?.includes("multipart/form-data");
 }
 
-const vigonResponse = {
+const sResponse = {
   object: {
     grade: "S",
     yellow_flags: [],
@@ -17,7 +17,7 @@ const vigonResponse = {
   },
 };
 
-const silverResponse = {
+const aResponse = {
   object: {
     grade: "A",
     yellow_flags: [
@@ -32,7 +32,24 @@ const silverResponse = {
   },
 };
 
-const badResumeResponse = {
+const bResponse = {
+  object: {
+    grade: "B",
+    yellow_flags: [
+      "La sección de habilidades es extensa y poco específica. Te recomiendo que la ajustes a la descripción del puesto al que te postulás, incluyendo las habilidades más relevantes y omitiendo las menos importantes o redundantes.",
+      "Se menciona 'AWS' dos veces en la sección de habilidades, lo cual puede percibirse como un descuido o falta de organización.",
+      "Mencionás que tus estudios universitarios están incompletos. Si bien no es un impedimento, te recomiendo que no lo hagas.",
+      "El proyecto 'MercadoCat' podría detallarse un poco más. Describí las tecnologías que usaste, el impacto que tuvo y cualquier otro detalle relevante que demuestre tus habilidades y experiencia.",
+    ],
+    red_flags: [
+      "En la sección 'Acerca de', podrías mencionar tus logros y cómo estos se alinean con las necesidades de la empresa a la que te postulás. Palabras como 'proactive', 'smart' y 'opportunities to grow' no demuestran nada, tenés que demostrar que sos el candidato que la empresa quiere.",
+      "Las experiencias listadas en el CV no especifican logros concretos, métricas o resultados obtenidos en los proyectos. Sería ideal incluir métricas que reflejen impacto, como 'mejoré el tiempo de carga en un X%' o 'aumenté la eficiencia del backend en un Y%.'",
+      "Inconsistencia en el uso del inglés: En la sección de 'EXPERIENCE' hay errores menores de inglés, como 'Particpated' en lugar de 'Participated'. Esto puede afectar la impresión profesional y dar una apariencia de falta de atención al detalle.",
+    ],
+  },
+};
+
+const cResponse = {
   object: {
     grade: "C",
     red_flags: [
@@ -182,7 +199,7 @@ export default async function handler(
             {
               type: "file",
               data: fs.readFileSync(
-                path.join(process.cwd(), "public/victor_vigon.pdf"),
+                path.join(process.cwd(), "public/s_resume.pdf"),
               ),
               mimeType: "application/pdf",
             },
@@ -190,7 +207,7 @@ export default async function handler(
         },
         {
           role: "assistant",
-          content: JSON.stringify(vigonResponse),
+          content: JSON.stringify(sResponse),
         },
         {
           role: "user",
@@ -199,7 +216,7 @@ export default async function handler(
             {
               type: "file",
               data: fs.readFileSync(
-                path.join(process.cwd(), "public/resume_silverdev.pdf"),
+                path.join(process.cwd(), "public/a_resume.pdf"),
               ),
               mimeType: "application/pdf",
             },
@@ -207,7 +224,7 @@ export default async function handler(
         },
         {
           role: "assistant",
-          content: JSON.stringify(silverResponse),
+          content: JSON.stringify(aResponse),
         },
         {
           role: "user",
@@ -216,7 +233,7 @@ export default async function handler(
             {
               type: "file",
               data: fs.readFileSync(
-                path.join(process.cwd(), "public/bad_resume.pdf"),
+                path.join(process.cwd(), "public/b_resume.pdf"),
               ),
               mimeType: "application/pdf",
             },
@@ -224,7 +241,24 @@ export default async function handler(
         },
         {
           role: "assistant",
-          content: JSON.stringify(badResumeResponse),
+          content: JSON.stringify(bResponse),
+        },
+        {
+          role: "user",
+          content: [
+            { type: "text", text: userPrompt },
+            {
+              type: "file",
+              data: fs.readFileSync(
+                path.join(process.cwd(), "public/c_resume.pdf"),
+              ),
+              mimeType: "application/pdf",
+            },
+          ],
+        },
+        {
+          role: "assistant",
+          content: JSON.stringify(cResponse),
         },
         {
           role: "user",
