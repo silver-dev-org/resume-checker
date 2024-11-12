@@ -177,14 +177,18 @@ export default async function handler(
       }
       pdfBuffer = Buffer.concat(chunks);
     } else {
-      const { url } = req.query;
+      let { url } = req.query;
       if (!url || typeof url !== "string") {
         throw new Error("Either provide a file or a URL");
       }
 
-      pdfBuffer = Buffer.from(
-        await fetch(url).then((response) => response.arrayBuffer()),
-      );
+      if (url.startsWith("public")) {
+        pdfBuffer = fs.readFileSync(path.join(process.cwd(), url));
+      } else {
+        pdfBuffer = Buffer.from(
+          await fetch(url).then((response) => response.arrayBuffer()),
+        );
+      }
     }
 
     const completion = await generateObject({

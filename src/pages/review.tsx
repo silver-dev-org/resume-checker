@@ -61,6 +61,13 @@ function getUrlFromFormData(formData?: FormData) {
   return "";
 }
 
+function getUrlFromFormUrl(url?: string) {
+  if (!url) return "";
+  if (url.startsWith("https")) return url;
+
+  return url.replace("public", "");
+}
+
 export default function Review() {
   const router = useRouter();
   const [formState] = useFormState();
@@ -136,7 +143,7 @@ export default function Review() {
           data={
             formState.formData
               ? getUrlFromFormData(formState.formData)
-              : formState.url
+              : getUrlFromFormUrl(formState.url)
           }
           onLoad={(object) => {
             // free memory

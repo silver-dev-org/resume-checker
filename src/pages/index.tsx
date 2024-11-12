@@ -65,6 +65,12 @@ export default function Home() {
     router.push("/review");
   });
 
+  function submitWithResumeUrl(letter: string) {
+    const url = `public/${letter}_resume.pdf`;
+    setFormState({ url });
+    router.push("/review");
+  }
+
   async function handleFormSubmission(event: ChangeEvent) {
     const formElement = event.currentTarget.parentElement;
     if (!formElement || !(formElement instanceof HTMLFormElement)) return;
@@ -120,30 +126,49 @@ export default function Home() {
             </Link>
           </p>
         </div>
-        <form
-          {...getRootProps()}
-          onSubmit={prevent}
-          method="POST"
-          action="/api/grade"
-          encType="multipart/form-data"
-          className={`w-full overflow-hidden h-full p-8 relative border-2 rounded-lg ${isDragActive ? "cursor-grabbing border-gray-400" : "border-gray-800"}  border-dashed flex items-center justify-center flex-col gap-1`}
-        >
-          <span className="px-10 py-2 block rounded-lg bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer text-white">
-            Upload
-          </span>
-          <span className="text-gray-700 dark:text-gray-300 mt-4 text-center">
-            Subí tu currículum para recibir feedback instantáneo
-          </span>
-          <input
-            className="sr-only"
-            onChange={handleFormSubmission}
-            id="resume"
-            name="resume"
-            {...getInputProps()}
-          />
-          {/* honeypot */}
-          <input className="sr-only" type="text" name="name" />
-        </form>
+        <div>
+          <div className="grid grid-cols-2 gap-4">
+            {[
+              { letter: "s", name: "Victor Vigon" },
+              { letter: "a", name: "Gabriel Benmergui" },
+              { letter: "b", name: "Horacio Consultora" },
+              { letter: "c", name: "Claudia Alves" },
+            ].map(({ letter, name }) => (
+              <button
+                key={letter}
+                className="flex flex-col gap-2 text-center items-center justify-center p-4 rounded bg-indigo-700/80"
+                onClick={() => submitWithResumeUrl(letter)}
+              >
+                <span>{name}</span>
+                <span>Grade: {letter.toUpperCase()}</span>
+              </button>
+            ))}
+          </div>
+          <form
+            {...getRootProps()}
+            onSubmit={prevent}
+            method="POST"
+            action="/api/grade"
+            encType="multipart/form-data"
+            className={`w-full overflow-hidden h-full p-8 relative border-2 rounded-lg ${isDragActive ? "cursor-grabbing border-gray-400" : "border-gray-800"}  border-dashed flex items-center justify-center flex-col gap-1`}
+          >
+            <span className="px-10 py-2 block rounded-lg bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer text-white">
+              Upload
+            </span>
+            <span className="text-gray-700 dark:text-gray-300 mt-4 text-center">
+              Subí tu currículum para recibir feedback instantáneo
+            </span>
+            <input
+              className="sr-only"
+              onChange={handleFormSubmission}
+              id="resume"
+              name="resume"
+              {...getInputProps()}
+            />
+            {/* honeypot */}
+            <input className="sr-only" type="text" name="name" />
+          </form>
+        </div>
       </div>
     </>
   );
