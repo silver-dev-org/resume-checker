@@ -102,14 +102,14 @@ export default function Home() {
 
       <div
         className={
-          "container grid grid-rows-[auto_1fr] w-full h-full p-8 gap-12 relative"
+          "container grid grid-rows-[auto_1fr] w-full p-8 gap-12 relative max-w-4xl border border-gray-800/80 rounded-lg shadow-sm"
         }
       >
         <div>
-          <h1 className="text-center text-2xl mb-4">
+          <h1 className="text-center text-3xl font-bold mb-4">
             Subí tu CV y recibí Feedback Instantáneo
           </h1>
-          <p className="text-center">
+          <p className="text-center text-black/80 dark:text-white/80">
             Resume checker está entrenado por recruiters e ingenieros de{" "}
             <Link
               href="https://silver.dev/"
@@ -126,24 +126,7 @@ export default function Home() {
             </Link>
           </p>
         </div>
-        <div>
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              { letter: "s", name: "Victor Vigon" },
-              { letter: "a", name: "Gabriel Benmergui" },
-              { letter: "b", name: "Horacio Consultora" },
-              { letter: "c", name: "Claudia Alves" },
-            ].map(({ letter, name }) => (
-              <button
-                key={letter}
-                className="flex flex-col gap-2 text-center items-center justify-center p-4 rounded bg-indigo-700/80"
-                onClick={() => submitWithResumeUrl(letter)}
-              >
-                <span>{name}</span>
-                <span>Grade: {letter.toUpperCase()}</span>
-              </button>
-            ))}
-          </div>
+        <div className="grid gap-4 lg:grid-cols-2">
           <form
             {...getRootProps()}
             onSubmit={prevent}
@@ -152,11 +135,11 @@ export default function Home() {
             encType="multipart/form-data"
             className={`w-full overflow-hidden h-full p-8 relative border-2 rounded-lg ${isDragActive ? "cursor-grabbing border-gray-400" : "border-gray-800"}  border-dashed flex items-center justify-center flex-col gap-1`}
           >
-            <span className="px-10 py-2 block rounded-lg bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer text-white">
-              Upload
+            <span className="px-10 py-2 text-center block rounded-lg bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer text-white">
+              Hacé click para subir un archivo
             </span>
             <span className="text-gray-700 dark:text-gray-300 mt-4 text-center">
-              Subí tu currículum para recibir feedback instantáneo
+              o arrastrá tu CV
             </span>
             <input
               className="sr-only"
@@ -168,6 +151,28 @@ export default function Home() {
             {/* honeypot */}
             <input className="sr-only" type="text" name="name" />
           </form>
+          <div className="self-end">
+            <p className="mb-4 text-center lg:text-left font-semibold">
+              O usá uno de nuestros ejemplos:
+            </p>
+            <div className="grid grid-cols-2 gap-4 justify-center lg:justify-start">
+              {[
+                { letter: "s", name: "Victor Vigon" },
+                { letter: "a", name: "Gabriel Benmergui" },
+                { letter: "b", name: "Horacio Consultora" },
+                { letter: "c", name: "Claudia Alves" },
+              ].map(({ letter, name }) => (
+                <button
+                  key={letter}
+                  className="flex flex-col gap-2 text-center items-center justify-center p-4 rounded-lg border border-indigo-700/40 hover:border-indigo-500/40"
+                  onClick={() => submitWithResumeUrl(letter)}
+                >
+                  <span className="font-semibold tracking-wider">{name}</span>
+                  <span>Grade: {letter.toUpperCase()}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </>

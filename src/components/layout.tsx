@@ -26,7 +26,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           Resume Checker
         </Link>
       </header>
-      <main className="flex flex-col gap-8 row-start-2 items-center py-6 px-2">
+      <main className="flex flex-col gap-8 row-start-2 items-center py-6 px-2 justify-center">
         {children}
       </main>
     </div>
