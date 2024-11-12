@@ -15,13 +15,13 @@ export default function Layout({ children }: { children: ReactNode }) {
       <Head>
         <title>Resume checker</title>
       </Head>
-      <header className="flex border-b-gray-800 border-b-solid border-b-2 px-4 py-8">
+      <header className="flex border-b-gray-800 border-b-solid border-b-2 p-4">
         <Link href="/" className="text-xl flex gap-4">
           <Image
             src="/images/logo-white.svg"
             alt="Icon."
-            width={30}
-            height={30}
+            width={20}
+            height={20}
           />{" "}
           Resume Checker
         </Link>
