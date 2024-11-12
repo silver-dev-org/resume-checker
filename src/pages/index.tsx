@@ -10,6 +10,7 @@ import {
 import { useDropzone } from "react-dropzone";
 import { useFormState } from "@/hooks/form-context";
 import { useMutationState } from "@tanstack/react-query";
+import ErrorBadge from "@/components/error-badge";
 
 function usePasteEvent(pasteListener: (event: ClipboardEvent) => void) {
   useEffect(() => {
@@ -90,62 +91,56 @@ export default function Home() {
   const mutationError = mutations[mutations.length - 1];
 
   return (
-    <div
-      className={
-        "container grid grid-rows-[100px_1fr_auto] w-full h-full p-8 gap-6"
-      }
-      {...getRootProps()}
-    >
-      {error || mutationError ? (
-        <div className="p-6 bg-red-500/60 rounded-lg w-full self-start animate-fly-in">
-          {error ? <p className="text-center">{error.message}</p> : null}
-          {mutationError ? (
-            <p className="text-center">{mutationError.message}</p>
-          ) : null}
-        </div>
-      ) : (
-        <span />
-      )}
-      <form
-        onSubmit={prevent}
-        method="POST"
-        action="/api/grade"
-        encType="multipart/form-data"
-        className={`w-full overflow-hidden h-full p-8 relative border-2 rounded-lg ${isDragActive ? "cursor-grabbing border-gray-400" : "border-gray-800"}  border-dashed flex items-center justify-center flex-col gap-1`}
-      >
-        <span className="px-10 py-2 block rounded-lg bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer text-white">
-          Upload
-        </span>
-        <span className="text-gray-700 dark:text-gray-300 mt-4 text-center">
-          Subí tu currículum para recibir feedback instantáneo
-        </span>
-        <input
-          className="sr-only"
-          onChange={handleFormSubmission}
-          id="resume"
-          name="resume"
-          {...getInputProps()}
-        />
-        {/* honeypot */}
-        <input className="sr-only" type="text" name="name" />
-      </form>
+    <>
+      <ErrorBadge error={error || mutationError} />
 
-      <p className="text-center mt-6">
-        Resume checker está entrenado por recruiters e ingenieros de{" "}
-        <Link
-          href="https://silver.dev/"
-          className="text-indigo-400 cursor-pointer hover:text-indigo-300"
+      <div
+        className={
+          "container grid grid-rows-[1fr_auto] w-full h-full p-8 gap-6 relative"
+        }
+        {...getRootProps()}
+      >
+        <form
+          onSubmit={prevent}
+          method="POST"
+          action="/api/grade"
+          encType="multipart/form-data"
+          className={`w-full overflow-hidden h-full p-8 relative border-2 rounded-lg ${isDragActive ? "cursor-grabbing border-gray-400" : "border-gray-800"}  border-dashed flex items-center justify-center flex-col gap-1`}
         >
-          Silver.dev
-        </Link>{" "}
-        y la{" "}
-        <Link
-          href="https://docs.silver.dev/interview-ready/getting-started/preparando-el-CV"
-          className="text-indigo-400 cursor-pointer hover:text-indigo-300"
-        >
-          guía de recruiting
-        </Link>
-      </p>
-    </div>
+          <span className="px-10 py-2 block rounded-lg bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer text-white">
+            Upload
+          </span>
+          <span className="text-gray-700 dark:text-gray-300 mt-4 text-center">
+            Subí tu currículum para recibir feedback instantáneo
+          </span>
+          <input
+            className="sr-only"
+            onChange={handleFormSubmission}
+            id="resume"
+            name="resume"
+            {...getInputProps()}
+          />
+          {/* honeypot */}
+          <input className="sr-only" type="text" name="name" />
+        </form>
+
+        <p className="text-center mt-6">
+          Resume checker está entrenado por recruiters e ingenieros de{" "}
+          <Link
+            href="https://silver.dev/"
+            className="text-indigo-400 cursor-pointer hover:text-indigo-300"
+          >
+            Silver.dev
+          </Link>{" "}
+          y la{" "}
+          <Link
+            href="https://docs.silver.dev/interview-ready/getting-started/preparando-el-CV"
+            className="text-indigo-400 cursor-pointer hover:text-indigo-300"
+          >
+            guía de recruiting
+          </Link>
+        </p>
+      </div>
+    </>
   );
 }

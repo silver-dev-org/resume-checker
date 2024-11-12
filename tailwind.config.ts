@@ -11,6 +11,7 @@ const config: Config = {
       animation: {
         loading: "loading 13s steps(var(--loading-steps)) infinite",
         "fly-in": "fly-in 0.4s ease forwards",
+        error: "error 0.4s ease forwards",
       },
       keyframes: {
         loading: {
@@ -25,6 +26,16 @@ const config: Config = {
           },
           "100%": {
             transform: "translateY(0)",
+            opacity: "1",
+          },
+        },
+        error: {
+          "0%": {
+            transform: "translateX(-50%) translateY(-20px)",
+            opacity: "0",
+          },
+          "100%": {
+            transform: "translateX(-50%) translateY(0)",
             opacity: "1",
           },
         },
