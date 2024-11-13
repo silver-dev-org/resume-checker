@@ -7,13 +7,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-const loadingSentences = [
-  "Analizando tu CV...",
-  "Buscando áreas a mejorar...",
-  "Puntuando tus habilidades...",
-  "Generando sugerencias...",
-];
-
 function Flag({ color }: { color: string }) {
   return (
     <svg
