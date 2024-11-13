@@ -1,4 +1,5 @@
 import Score from "@/components/score";
+import Skeleton from "@/components/skeleton";
 import { useFormState } from "@/hooks/form-context";
 import type { FormState } from "@/types";
 import { useMutation } from "@tanstack/react-query";
@@ -117,52 +118,32 @@ export default function Review() {
 
   return (
     <div className="mt-6 animate-fly-in container mx-auto px-4 grid lg:grid-cols-2 gap-6">
-      {mutation.isPending ? (
-        <div className="p-8 rounded-lg bg-gray-500/10 border-2 border-black/30 dark:border-white/30 h-full lg:min-h-96 grid place-items-center">
-          <div className="max-h-8 overflow-hidden">
-            <div
-              /** @ts-expect-error we are using css props the proper way */
-              style={{ "--loading-steps": loadingSentences.length }}
-              className="animate-loading [--loading-steps]-[12]"
-            >
-              {loadingSentences.map((s) => (
-                <p
-                  className="h-8 m-0 relative overflow-hidden animate-pulse w-full text-center"
-                  key={s}
-                >
-                  {s}
-                </p>
-              ))}
-            </div>
-          </div>
-        </div>
-      ) : (
-        <object
-          className="rounded-lg overflow-hidden mb-8 border-2 border-black/30 dark:border-white/30 h-full lg:min-h-96"
-          type="application/pdf"
-          data={
-            formState.formData
-              ? getUrlFromFormData(formState.formData)
-              : getUrlFromFormUrl(formState.url)
-          }
-          onLoad={(object) => {
-            // free memory
-            URL.revokeObjectURL((object.target as HTMLObjectElement).data);
-          }}
-          width="100%"
-          height="100%"
-        >
-          <p className="flex w-full h-full text-center items-center justify-center">
-            Tu browser no permite PDFs.
-          </p>
-        </object>
-      )}
+      <object
+        className="rounded-lg overflow-hidden mb-8 border-2 border-black/30 dark:border-white/30 h-full lg:min-h-[500px]"
+        type="application/pdf"
+        data={
+          formState.formData
+            ? getUrlFromFormData(formState.formData)
+            : getUrlFromFormUrl(formState.url)
+        }
+        onLoad={(object) => {
+          // free memory
+          URL.revokeObjectURL((object.target as HTMLObjectElement).data);
+        }}
+        width="100%"
+        height="100%"
+      >
+        <p className="flex w-full h-full text-center items-center justify-center">
+          Tu browser no permite PDFs.
+        </p>
+      </object>
       <div>
         <h2 className="text-2xl mb-4">Your Resume Score:</h2>
         <div className="mb-8">
           <Score letter={mutation?.data?.grade} />
         </div>
-        <div className={`opacity-0 ${mutation.data ? "animate-fly-in" : ""}`}>
+        <div>
+          {mutation.isPending ? <Skeleton /> : null}
           {mutation.data && mutation.data?.red_flags.length > 0 ? (
             <>
               <h3 className="text-xl mt-4 mb-2 flex gap-2 items-center">
