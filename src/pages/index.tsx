@@ -131,7 +131,7 @@ export default function Home() {
             method="POST"
             action="/api/grade"
             encType="multipart/form-data"
-            className={`w-full overflow-hidden md:col-span-3 h-full p-8 relative border-2 rounded-lg ${isDragActive ? "cursor-grabbing border-gray-400" : "border-gray-800"}  border-dashed flex items-center justify-center flex-col gap-1`}
+            className={`w-full overflow-hidden md:col-span-3 h-full p-8 relative border-2 rounded-lg ${isDragActive ? "cursor-grabbing dark:border-gray-400 border-gray-800" : "border-gray-400 dark:border-gray-500"}  border-dashed flex items-center justify-center flex-col gap-1`}
           >
             <span className="px-10 py-2 text-center block rounded-lg bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer text-white">
               Hacé click para subir un archivo
