@@ -37,35 +37,35 @@ body {
 }
 
 .a {
-    @apply bg-green-500/30;
+    @apply bg-green-500/50;
 }
 
 .b {
-    @apply bg-green-400/30;
+    @apply bg-green-400/50;
 }
 
 .c {
-    @apply bg-yellow-400/30;
+    @apply bg-yellow-400/50;
 }
 
 .s {
-    @apply bg-gradient-to-tr from-pink-500/50 to-blue-500/50;
+    @apply bg-gradient-to-tr from-pink-500/60 to-blue-500/60;
 }
 
 .a:hover {
-    @apply bg-green-500/40;
+    @apply bg-green-500/80;
 }
 
 .b:hover {
-    @apply bg-green-400/40;
+    @apply bg-green-400/80;
 }
 
 .c:hover {
-    @apply bg-yellow-400/40;
+    @apply bg-yellow-400/80;
 }
 
 .s:hover {
-    @apply bg-gradient-to-tr from-pink-500/60 to-blue-500/60;
+    @apply bg-gradient-to-tr from-pink-500/80 to-blue-500/80;
 }
 
 .thinking {

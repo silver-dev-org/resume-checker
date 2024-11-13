@@ -151,7 +151,7 @@ export default function Home() {
           </form>
           <div className="self-end">
             <p className="mb-4 text-center md:text-left">O usá un ejemplo:</p>
-            <div className="grid grid-cols-1 gap-4 justify-center lg:justify-start">
+            <div className="grid grid-cols-1 gap-6 justify-center lg:justify-start">
               {[
                 { letter: "s", name: "Victor Vigon" },
                 { letter: "a", name: "Gabriel Benmergui" },
@@ -160,11 +160,16 @@ export default function Home() {
               ].map(({ letter, name }) => (
                 <button
                   key={letter}
-                  className={`${letter} transition-colors flex flex-col gap-2 text-center items-center justify-center p-4 rounded-lg`}
+                  className="relative"
                   onClick={() => submitWithResumeUrl(letter)}
                 >
-                  <span className="font-semibold tracking-wider">{name}</span>
-                  <span>Grade: {letter.toUpperCase()}</span>
+                  <div
+                    className={`${letter} absolute transition-colors inset-0 rounded-lg`}
+                  ></div>
+                  <div className="m-1 pointer-events-none flex flex-col gap-2 text-center items-center justify-center rounded-lg p-4 relative bg-[var(--background)]">
+                    <span className="font-semibold tracking-wider">{name}</span>
+                    <span>Grade: {letter.toUpperCase()}</span>
+                  </div>
                 </button>
               ))}
             </div>
