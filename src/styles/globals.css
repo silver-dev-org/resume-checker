@@ -45,7 +45,7 @@ body {
 }
 
 .c {
-    @apply bg-yellow-400/50;
+    @apply bg-red-400/50 dark:bg-yellow-400/50;
 }
 
 .s {
@@ -61,7 +61,7 @@ body {
 }
 
 .c:hover {
-    @apply bg-yellow-400/80;
+    @apply bg-red-400/80 dark:bg-yellow-400/80;
 }
 
 .s:hover {

@@ -18,6 +18,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       <header className="flex border-b-gray-800 border-b-solid border-b-2 p-4">
         <Link href="/" className="text-xl flex gap-4">
           <Image
+            className="invert dark:invert-0"
             src="/images/logo-white.svg"
             alt="Icon."
             width={20}
