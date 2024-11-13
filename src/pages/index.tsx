@@ -101,48 +101,29 @@ export default function Home() {
       <ErrorBadge error={error || mutationError} />
 
       <div
-        className={
-          "container grid grid-rows-[auto_1fr] w-full h-full p-8 gap-12 relative"
-        }
+        className={"container grid w-full h-full p-8 relative justify-center"}
       >
-        <div>
-          <h1 className="text-center text-2xl mb-4">
-            Subí tu CV y recibí Feedback Instantáneo
-          </h1>
-          <p className="text-center">
-            Resume checker está entrenado por recruiters e ingenieros de{" "}
-            <Link
-              href="https://silver.dev/"
-              className="text-indigo-400 cursor-pointer hover:text-indigo-300"
-            >
-              Silver.dev
-            </Link>{" "}
-            y la{" "}
-            <Link
-              href="https://docs.silver.dev/interview-ready/soft-fundamentals/preparando-el-cv#cv-checklist"
-              className="text-indigo-400 cursor-pointer hover:text-indigo-300"
-            >
-              guía de recruiting
-            </Link>
-          </p>
-        </div>
-        <div>
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              { letter: "s", name: "Victor Vigon" },
-              { letter: "a", name: "Gabriel Benmergui" },
-              { letter: "b", name: "Horacio Consultora" },
-              { letter: "c", name: "Claudia Alves" },
-            ].map(({ letter, name }) => (
-              <button
-                key={letter}
-                className="flex flex-col gap-2 text-center items-center justify-center p-4 rounded bg-indigo-700/80"
-                onClick={() => submitWithResumeUrl(letter)}
+        <div className="grid gap-8 md:grid-cols-4 lg:self-center max-w-4xl">
+          <div className="md:col-span-4 md:mb-8">
+            <h1 className="text-center text-3xl lg:text-5xl font-bold mb-4">
+              Subí tu CV y recibí Feedback Instantáneo
+            </h1>
+            <p className="text-center text-black/80 dark:text-white/80">
+              Resume checker está entrenado por recruiters e ingenieros de{" "}
+              <Link
+                href="https://silver.dev/"
+                className="text-indigo-400 cursor-pointer hover:text-indigo-300"
               >
-                <span>{name}</span>
-                <span>Grade: {letter.toUpperCase()}</span>
-              </button>
-            ))}
+                Silver.dev
+              </Link>{" "}
+              y la{" "}
+              <Link
+                href="https://docs.silver.dev/interview-ready/soft-fundamentals/preparando-el-cv#cv-checklist"
+                className="text-indigo-400 cursor-pointer hover:text-indigo-300"
+              >
+                guía de recruiting
+              </Link>
+            </p>
           </div>
           <form
             {...getRootProps()}
@@ -150,13 +131,13 @@ export default function Home() {
             method="POST"
             action="/api/grade"
             encType="multipart/form-data"
-            className={`w-full overflow-hidden h-full p-8 relative border-2 rounded-lg ${isDragActive ? "cursor-grabbing border-gray-400" : "border-gray-800"}  border-dashed flex items-center justify-center flex-col gap-1`}
+            className={`w-full overflow-hidden md:col-span-3 h-full p-8 relative border-2 rounded-lg ${isDragActive ? "cursor-grabbing dark:border-gray-400 border-gray-800" : "border-gray-400 dark:border-gray-500"}  border-dashed flex items-center justify-center flex-col gap-1`}
           >
-            <span className="px-10 py-2 block rounded-lg bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer text-white">
-              Upload
+            <span className="px-10 py-2 text-center block rounded-lg bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer text-white">
+              Hacé click para subir un archivo
             </span>
             <span className="text-gray-700 dark:text-gray-300 mt-4 text-center">
-              Subí tu currículum para recibir feedback instantáneo
+              o arrastrá tu CV
             </span>
             <input
               className="sr-only"
@@ -168,6 +149,31 @@ export default function Home() {
             {/* honeypot */}
             <input className="sr-only" type="text" name="name" />
           </form>
+          <div className="self-end">
+            <p className="mb-4 text-center md:text-left">O usá un ejemplo:</p>
+            <div className="grid grid-cols-1 gap-6 justify-center lg:justify-start">
+              {[
+                { letter: "s", name: "Victor Vigon" },
+                { letter: "a", name: "Gabriel Benmergui" },
+                { letter: "b", name: "Horacio Consultora" },
+                { letter: "c", name: "Claudia Alves" },
+              ].map(({ letter, name }) => (
+                <button
+                  key={letter}
+                  className="relative"
+                  onClick={() => submitWithResumeUrl(letter)}
+                >
+                  <div
+                    className={`${letter} absolute transition-colors inset-0 rounded-lg`}
+                  ></div>
+                  <div className="m-1 pointer-events-none flex flex-col gap-2 text-center items-center justify-center rounded-lg p-4 relative bg-[var(--background)]">
+                    <span className="font-semibold tracking-wider">{name}</span>
+                    <span>Grade: {letter.toUpperCase()}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </>
