@@ -3,45 +3,83 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+    --background: #ffffff;
+    --foreground: #171717;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #111111;
-    --foreground: #2e251f;
-  }
+    :root {
+        --background: #111111;
+        --foreground: #2e251f;
+    }
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+    color: var(--foreground);
+    background: var(--background);
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+    .text-balance {
+        text-wrap: balance;
+    }
 }
 
 @keyframes shimmer {
-  from {
-    background-position-x: calc(var(--to) * -1ch);
-  }
+    from {
+        background-position-x: calc(var(--to) * -1ch);
+    }
 
-  to {
-    background-position-x: calc(var(--to) * 1ch);
-  }
+    to {
+        background-position-x: calc(var(--to) * 1ch);
+    }
+}
+
+.a {
+    @apply bg-green-500/50;
+}
+
+.b {
+    @apply bg-green-400/50;
+}
+
+.c {
+    @apply bg-red-400/50 dark:bg-yellow-400/50;
+}
+
+.s {
+    @apply bg-gradient-to-tr from-pink-500/60 to-blue-500/60;
+}
+
+.a:hover {
+    @apply bg-green-500/80;
+}
+
+.b:hover {
+    @apply bg-green-400/80;
+}
+
+.c:hover {
+    @apply bg-red-400/80 dark:bg-yellow-400/80;
+}
+
+.s:hover {
+    @apply bg-gradient-to-tr from-pink-500/80 to-blue-500/80;
 }
 
 .thinking {
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-  will-change: background-position-x;
-  animation: shimmer 3s ease infinite;
-  background-repeat: no-repeat;
-  background-image: linear-gradient(to right, transparent, white 49%, white 51%, transparent);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-text-fill-color: transparent;
+    will-change: background-position-x;
+    animation: shimmer 3s ease infinite;
+    background-repeat: no-repeat;
+    background-image: linear-gradient(
+        to right,
+        transparent,
+        white 49%,
+        white 51%,
+        transparent
+    );
 }
