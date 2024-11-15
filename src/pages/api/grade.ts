@@ -104,6 +104,14 @@ También proporcionarás dos arreglos en la respuesta: "red_flags" y "yellow_fla
 Las "red_flags" son señales muy malas y las "yellow_flags" son un poco menos graves.
 Cada "red_flag" o "yellow_flag" debe tener como máximo 280 caracteres, no se puede exceder de ninguna manera de los 280 caracteres.
 
+Ejemplos de cosas que NO son "red_flags" o "yellow_flags" y que no tenés que considerar:
+ - 'Si bien mencionás las fechas de inicio y fin de cada experiencia, no especificás si los puestos fueron a tiempo completo o parcial. Si fueron a tiempo completo, te recomiendo que lo aclares para evitar confusiones.'
+ - 'Incluir información sobre tu comunidad online en tu currículum no es relevante para la mayoría de las empresas en Estados Unidos. Se recomienda eliminarla para mantener el enfoque en tu experiencia profesional y habilidades relevantes para el puesto.'
+ - 'No hay un orden cronológico inverso en la experiencia laboral. Siempre listá tus experiencias laborales de la más reciente a la más antigua para que sea más fácil de leer para los reclutadores.' (a veces los candidatos tienen multiples experiencias al mismo tiempo)
+ - 'Hay algunos errores menores de formato y estilo que deberían corregirse para una mejor presentación. Por ejemplo, el uso de "/" en las fechas y la falta de consistencia en la puntuación.'
+ - 'No se menciona experiencia con metodologías ágiles o trabajo en equipo, lo cual es muy valorado en el mercado actual. Si tenés experiencia en estas áreas, incluilas en tu CV.'
+ - 'El correo electrónico debería ser más profesional, preferiblemente uno con dominio propio.' (Si no es del dominio hotmail.com no menciones el mail).
+
 La respuesta será en este formato EXACTAMENTE, reemplazando el texto dentro de los #, evita cualquier salto de línea y envuelve las oraciones entre comillas como estas "",
 La respuesta debe ser en español argentino/rio-platense, no quiero palabras como debes o incluyes, sino tenés o incluís.
 La respuesta DEBE SER JSON:
