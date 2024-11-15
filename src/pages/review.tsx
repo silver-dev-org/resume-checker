@@ -1,3 +1,4 @@
+import Flags from "@/components/flags";
 import Score from "@/components/score";
 import Skeleton from "@/components/skeleton";
 import { useFormState } from "@/hooks/form-context";
@@ -6,46 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-
-function Flag({ color }: { color: string }) {
-  return (
-    <svg
-      viewBox="0 0 72 72"
-      xmlns="http://www.w3.org/2000/svg"
-      className="w-4 h-4"
-    >
-      <g id="color">
-        <polygon
-          fill={color}
-          points="67 24 36 33.5 5 43 5 24 5 5 36 14.5 67 24"
-        />
-      </g>
-      <g id="line">
-        <g>
-          <polygon
-            fill="none"
-            stroke="#111"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            points="67 24 36 33.5 5 43 5 24 5 5 36 14.5 67 24"
-          />
-          <line
-            x1="5"
-            x2="5"
-            y1="5"
-            y2="67"
-            fill="none"
-            stroke="#111"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-          />
-        </g>
-      </g>
-    </svg>
-  );
-}
+import Markdown from "react-markdown";
 
 function getUrlFromFormData(formData?: FormData) {
   if (!formData) return "";
@@ -138,34 +100,19 @@ export default function Review() {
         <div>
           {mutation.isPending ? <Skeleton /> : null}
           {mutation.data && mutation.data?.red_flags.length > 0 ? (
-            <>
-              <h3 className="text-xl mt-4 mb-2 flex gap-2 items-center">
-                <Flag color="#d22f27" />({mutation.data.red_flags.length}) Red
-                flag{mutation.data.red_flags.length > 1 ? "s" : ""}
-              </h3>
-              <ul className="pl-6">
-                {mutation.data?.red_flags.map((flag) => (
-                  <li className="list-disc mb-2 last:mb-0" key={flag}>
-                    {flag}
-                  </li>
-                ))}
-              </ul>
-            </>
+            <Flags
+              flags={mutation.data.red_flags}
+              color="#d22f27"
+              label={`Red
+                flag${mutation.data.red_flags.length > 1 ? "s" : ""}`}
+            />
           ) : null}
           {mutation.data && mutation.data?.yellow_flags.length > 0 ? (
-            <>
-              <h3 className="text-xl mt-4 mb-2 flex gap-2 items-center">
-                <Flag color="#eff81a" /> ({mutation.data.yellow_flags.length})
-                Yellow flag{mutation.data.yellow_flags.length > 1 ? "s" : ""}
-              </h3>
-              <ul className="pl-6">
-                {mutation.data?.yellow_flags.map((flag) => (
-                  <li className="list-disc mb-2 last:mb-0" key={flag}>
-                    {flag}
-                  </li>
-                ))}
-              </ul>
-            </>
+            <Flags
+              flags={mutation.data.yellow_flags}
+              color="#eff81a"
+              label={`Yellow flag${mutation.data.yellow_flags.length > 1 ? "s" : ""}`}
+            />
           ) : null}
         </div>
       </div>
