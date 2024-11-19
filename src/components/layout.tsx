@@ -16,7 +16,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         <title>Resume checker</title>
       </Head>
       <header className="flex border-b-gray-800 border-b-solid border-b-2 p-4">
-        <Link href="/" className="text-xl flex gap-4">
+        <Link href="/" className="text-xl flex gap-2">
           <Image
             className="invert dark:invert-0"
             src="/images/logo-white.svg"
