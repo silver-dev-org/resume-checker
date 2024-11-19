@@ -147,7 +147,7 @@ export default function Review() {
             accept="application/pdf"
           />
           {/* honeypot */}
-          <input className="sr-only" type="text" name="name" />
+          <input className="hidden" type="text" name="name" />
         </form>
       </div>
       <hr className="w-full my-8 lg:col-span-2" />

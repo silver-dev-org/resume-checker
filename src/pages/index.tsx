@@ -147,7 +147,7 @@ export default function Home() {
               {...getInputProps()}
             />
             {/* honeypot */}
-            <input className="sr-only" type="text" name="name" />
+            <input className="hidden" type="text" name="name" />
           </form>
           <div className="self-end">
             <p className="mb-4 text-center md:text-left">O usá un ejemplo:</p>
