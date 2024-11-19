@@ -7,7 +7,6 @@ import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import Markdown from "react-markdown";
 
 function getUrlFromFormData(formData?: FormData) {
   if (!formData) return "";
@@ -102,7 +101,7 @@ export default function Review() {
           {mutation.data && mutation.data?.red_flags.length > 0 ? (
             <Flags
               flags={mutation.data.red_flags}
-              color="#d22f27"
+              color="red"
               label={`Red
                 flag${mutation.data.red_flags.length > 1 ? "s" : ""}`}
             />
@@ -110,7 +109,7 @@ export default function Review() {
           {mutation.data && mutation.data?.yellow_flags.length > 0 ? (
             <Flags
               flags={mutation.data.yellow_flags}
-              color="#eff81a"
+              color="yellow"
               label={`Yellow flag${mutation.data.yellow_flags.length > 1 ? "s" : ""}`}
             />
           ) : null}

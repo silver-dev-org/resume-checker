@@ -5,11 +5,18 @@ const letterColors = {
   A: "bg-green-500/50",
   B: "bg-green-400/50",
   C: "bg-yellow-400/50",
+  " ": "bg-white/30",
 } as const;
 
 type Letter = keyof typeof letterColors;
 
 const letterKeys = Object.keys(letterColors) as Array<Letter>;
+
+function loadingStyles(l: string) {
+  if (l !== " ") return "";
+
+  return "animate-pulse";
+}
 
 export default function Score({ letter }: { letter?: string }) {
   const [idx, setIdx] = useState(letterKeys.length - 1);
@@ -34,7 +41,7 @@ export default function Score({ letter }: { letter?: string }) {
         {letterKeys.map((l) => (
           <span
             key={l}
-            className={`md:text-xl font-bold w-16 h-16 md:w-20 md:h-20 flex items-center justify-center ${letterColors[l]}`}
+            className={`md:text-xl font-bold w-16 h-16 md:w-20 md:h-20 flex items-center justify-center ${letterColors[l]} ${loadingStyles(l)}`}
           >
             {l}
           </span>
