@@ -21,7 +21,7 @@ const aResponse = {
   object: {
     grade: "A",
     yellow_flags: [
-      "Incluir tecnologías en el título o subtítulo del CV, lo que hace que parezca menos profesional y más limitado.",
+      "Incluir tecnologías en el título o subtítulo del CV, lo que hace que parezca relleno.",
       "Usar un correo en Hotmail, proyecta una imagen anticuada.",
       "Incluir el domicilio completo en el CV; basta con mencionar ciudad y país si es relevante.",
       "Formato y diseño: El CV parece no seguir el estilo recomendado para Estados Unidos (como Latex o un generador similar), lo que puede restarle profesionalismo. Usá el [template de silver.dev](https://typst.app/?template=silver-dev-cv&version=1.0.0).",
@@ -145,6 +145,16 @@ ${GUIDE}
 
 ${NON_FLAGS}
 `;
+type CacheValue = {
+  cachedAt: number;
+  response: z.infer<typeof ResponseSchema>;
+};
+const cache = new Map<string, CacheValue>();
+const cacheDuration = 24 * 60 * 60 * 1000; // 24 hours in millis
+
+function isStale(cache: CacheValue) {
+  return Date.now() - cache.cachedAt > cacheDuration;
+}
 
 type ResponseData = z.infer<typeof ResponseSchema> | { error: string };
 
@@ -159,6 +169,7 @@ export default async function handler(
   res: NextApiResponse<ResponseData>,
 ) {
   try {
+    let shouldCache = false;
     if (req.method !== "POST") {
       res.status(404).send({ error: "Not Found" });
       return;
@@ -176,9 +187,14 @@ export default async function handler(
       if (!url || typeof url !== "string") {
         throw new Error("Either provide a file or a URL");
       }
+      const cached = cache.has(url) ? cache.get(url) : null;
 
-      if (url.startsWith("public")) {
+      if (url.startsWith("public") && cached && !isStale(cached)) {
+        res.status(200).json(cached.response);
+        return;
+      } else if (url.startsWith("public") && (!cached || isStale(cached))) {
         pdfBuffer = fs.readFileSync(path.join(process.cwd(), url));
+        shouldCache = true;
       } else {
         pdfBuffer = Buffer.from(
           await fetch(url).then((response) => response.arrayBuffer()),
@@ -272,6 +288,13 @@ export default async function handler(
 
     if (!completion) {
       throw new Error("Couldn't complete chat request");
+    }
+
+    if (shouldCache) {
+      cache.set(req.query.url as string, {
+        cachedAt: Date.now(),
+        response: completion.object,
+      });
     }
 
     res.status(200).json(completion.object);
