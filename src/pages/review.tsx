@@ -3,6 +3,7 @@ import Score from "@/components/score";
 import Skeleton from "@/components/skeleton";
 import { useFormState } from "@/hooks/form-context";
 import type { FormState } from "@/types";
+import { sendGAEvent } from "@next/third-parties/google";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -57,7 +58,15 @@ export default function Review() {
 
       return res.json();
     },
-    onError: () => {
+    onMutate: () => {
+      sendGAEvent("event", "submission");
+    },
+    onSuccess: (data) => {
+      sendGAEvent("event", "success", data);
+    },
+    onError: (e) => {
+      sendGAEvent("event", "error", e);
+
       router.push("/");
     },
   });
