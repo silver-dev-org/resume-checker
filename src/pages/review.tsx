@@ -109,7 +109,7 @@ export default function Review() {
         </p>
       </object>
       <div>
-        <h2 className="text-2xl mb-4">Your Resume Score:</h2>
+        <h2 className="text-2xl mb-4">El Puntaje de tu CV</h2>
         <div className="mb-8">
           <Score letter={mutation?.data?.grade} />
         </div>
@@ -151,7 +151,21 @@ export default function Review() {
         </form>
       </div>
       <hr className="w-full my-8 lg:col-span-2" />
-
+      <h2 className="w-full my-8 text-3xl text-center lg:col-span-2">
+        Resume Checker es de{" "}
+        <Link
+          href="https://ready.silver.dev"
+          className="text-indigo-400 hover:text-indigo-300 cursor-pointer"
+        >
+          Interview Ready
+        </Link>
+      </h2>
+      <p className="mt-0 text-center lg:col-span-2">
+        Esta herramienta es parte de un programa integral de preparación de
+        entrevistas.
+        <br />
+        Podes ver el formato y más contenido en el video.
+      </p>
       <iframe
         className="rounded-lg shadow-lg mt-4 max-w-xs md:max-w-none mx-auto lg:col-span-2"
         width="560"
@@ -162,16 +176,6 @@ export default function Review() {
         referrerPolicy="strict-origin-when-cross-origin"
         allowFullScreen
       ></iframe>
-
-      <p className="mt-8 text-center lg:col-span-2">
-        Revisá tu LinkedIn y mucho más en{" "}
-        <Link
-          href="https://ready.silver.dev"
-          className="text-indigo-400 hover:text-indigo-300 cursor-pointer"
-        >
-          ready.silver.dev
-        </Link>
-      </p>
     </div>
   );
 }
