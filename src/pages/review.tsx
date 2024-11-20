@@ -49,7 +49,10 @@ export default function Review() {
       }
 
       if (!res.ok) {
-        throw new Error("Hubo un error inesperado, probá de nuevo");
+        const err = await res.json();
+        throw new Error(
+          "error" in err ? err.error : "Hubo un error inesperado",
+        );
       }
 
       return res.json();

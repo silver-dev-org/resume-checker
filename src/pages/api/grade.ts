@@ -185,7 +185,7 @@ export default async function handler(
     } else {
       const { url } = req.query;
       if (!url || typeof url !== "string") {
-        throw new Error("Either provide a file or a URL");
+        throw new Error("Tenes que proveer un archivo pdf o un url");
       }
       const cached = cache.has(url) ? cache.get(url) : null;
 
@@ -287,7 +287,9 @@ export default async function handler(
     });
 
     if (!completion) {
-      throw new Error("Couldn't complete chat request");
+      throw new Error(
+        "No se pudo completar la llamada a la inteligencia artificial",
+      );
     }
 
     if (shouldCache) {
@@ -302,7 +304,7 @@ export default async function handler(
     console.error(err);
     res
       .status(500)
-      .send({ error: err instanceof Error ? err.message : "Unexpected error" });
+      .send({ error: err instanceof Error ? err.message : "Error inesperado" });
   }
 }
 
