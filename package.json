@@ -9,8 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@ai-sdk/google": "^0.0.55",
     "@ai-sdk/openai": "^0.0.70",
+=======
+    "@next/third-parties": "^15.0.3",
+>>>>>>> 9663884 (add analytics)
     "@tanstack/react-query": "^5.59.15",
     "@types/pdf-parse": "^1.1.4",
     "ai": "^3.4.23",
