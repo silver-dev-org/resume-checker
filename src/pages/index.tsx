@@ -106,7 +106,7 @@ export default function Home() {
         <div className="grid gap-8 md:grid-cols-4 lg:self-center max-w-4xl">
           <div className="md:col-span-4 md:mb-8">
             <h1 className="text-center text-3xl lg:text-5xl font-bold mb-4">
-              Subí tu CV y recibí Feedback Instantáneo
+              Subí tu CV y recibí feedback inmediato
             </h1>
             <p className="text-center text-black/80 dark:text-white/80">
               Resume checker está entrenado por recruiters e ingenieros de{" "}
@@ -115,13 +115,14 @@ export default function Home() {
                 className="text-indigo-400 cursor-pointer hover:text-indigo-300"
               >
                 Silver.dev
-              </Link>{" "}
-              y la{" "}
+              </Link>
+              .<br />
+              Podes encontrar todas las recomendaciones en la{" "}
               <Link
-                href="https://docs.silver.dev/interview-ready/soft-fundamentals/preparando-el-cv#cv-checklist"
+                href="https://docs.silver.dev/candidate-guide"
                 className="text-indigo-400 cursor-pointer hover:text-indigo-300"
               >
-                guía de recruiting
+                Candidate Guide
               </Link>
             </p>
           </div>
