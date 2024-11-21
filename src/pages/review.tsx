@@ -36,12 +36,6 @@ export default function Review() {
   >({
     mutationKey: ["resume-check"],
     mutationFn: async ({ url, formData }) => {
-      return new Promise((res) =>
-        setTimeout(
-          () => res({ grade: "B", red_flags: [], yellow_flags: [] }),
-          10000,
-        ),
-      );
       let res;
 
       if (formData) {
