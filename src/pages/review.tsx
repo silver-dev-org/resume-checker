@@ -135,7 +135,7 @@ export default function Review() {
         </Link>
       </div>
       <hr className="w-full my-8 lg:col-span-2" />
-      <h2 className="w-full my-8 text-3xl text-center lg:col-span-2">
+      <h2 className="w-full my-6 text-3xl text-center lg:col-span-2">
         Resume Checker es de{" "}
         <Link
           href="https://ready.silver.dev"

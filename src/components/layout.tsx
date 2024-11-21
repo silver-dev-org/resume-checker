@@ -58,7 +58,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           href="https://jobs.ashbyhq.com/Silver?utm_source=Pedw1mQEZd"
           className="text-sm text-indigo-400 cursor-pointer hover:text-indigo-300"
         >
-          Open Jobs
+          Jobs
         </Link>
         <Link
           href="https://ready.silver.dev/"
