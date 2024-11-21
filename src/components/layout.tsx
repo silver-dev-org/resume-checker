@@ -43,6 +43,12 @@ export default function Layout({ children }: { children: ReactNode }) {
         >
           Interview Ready
         </Link>
+        <Link
+          href="privacy"
+          className="text-sm text-indigo-400 cursor-pointer hover:text-indigo-300"
+        >
+          Privacy Policy
+        </Link>
       </footer>
     </div>
   );
