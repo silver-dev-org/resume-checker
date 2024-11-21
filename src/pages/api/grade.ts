@@ -4,6 +4,7 @@ import { z } from "zod";
 import { google } from "@ai-sdk/google";
 import fs from "node:fs";
 import path from "node:path";
+import pdf from "pdf-parse";
 
 function isMultipartFormData(req: NextApiRequest) {
   return req.headers["content-type"]?.includes("multipart/form-data");
@@ -101,7 +102,7 @@ const GUIDE = `
     - Tener errores de ortografía.
 `;
 
-const sysPrompt = `
+const sysPrompt = (author?: string) => `
 Sos un asesor profesional y reclutador experto con amplia experiencia en revisar y analizar currículums.
 Tu objetivo es evaluar el contenido, el formato y el impacto de los currículums enviados por los solicitantes de empleo.
 Proporcionas retroalimentación constructiva, una calificación de C a A, y S para un currículum excepcionalmente bueno, junto con sugerencias específicas para mejorar.
@@ -114,6 +115,11 @@ Seguí estas guía:
 --- Comienzo de guía ---
 ${GUIDE}
 --- Fin de guía ---
+
+--- Aclaraciones sobre la guía ---
+- Nunca digas que usar gmail está mal.
+- Si el autor mencionado dentro de parentesis es "silver" no vas a mencionar nada del template (autor: ${author})
+--- Fin de aclaraciones sobre la guía ---
 
 También proporcionarás dos arreglos en la respuesta: "red_flags" y "yellow_flags".
 Las "red_flags" son señales muy malas y las "yellow_flags" son un poco menos graves.
@@ -202,15 +208,20 @@ export default async function handler(
       }
     }
 
+    const parsed = await pdf(pdfBuffer);
+
     const completion = await generateObject({
       model: google("gemini-1.5-pro"),
       temperature: 0,
       messages: [
-        { role: "system", content: sysPrompt },
+        { role: "system", content: sysPrompt(parsed?.info?.Author) },
         {
           role: "user",
           content: [
-            { type: "text", text: userPrompt },
+            {
+              type: "text",
+              text: userPrompt,
+            },
             {
               type: "file",
               data: fs.readFileSync(
