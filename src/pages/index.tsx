@@ -116,14 +116,7 @@ export default function Home() {
               >
                 Silver.dev
               </Link>
-              .<br />
-              Podes encontrar todas las recomendaciones en la{" "}
-              <Link
-                href="https://docs.silver.dev/candidate-guide"
-                className="text-indigo-400 cursor-pointer hover:text-indigo-300"
-              >
-                Candidate Guide
-              </Link>
+              .
             </p>
           </div>
           <form
@@ -135,7 +128,7 @@ export default function Home() {
             className={`w-full overflow-hidden md:col-span-3 h-full p-8 relative border-2 rounded-lg ${isDragActive ? "cursor-grabbing dark:border-gray-400 border-gray-800" : "border-gray-400 dark:border-gray-500"}  border-dashed flex items-center justify-center flex-col gap-1`}
           >
             <span className="px-10 py-2 text-center block rounded-lg bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer text-white">
-              Hacé click para subir un archivo
+              Hacé click para subir tu CV
             </span>
             <span className="text-gray-700 dark:text-gray-300 mt-4 text-center">
               o arrastrá tu CV
