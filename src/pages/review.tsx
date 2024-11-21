@@ -161,7 +161,7 @@ export default function Review() {
         className="rounded-lg shadow-lg mt-4 max-w-xs md:max-w-none mx-auto lg:col-span-2"
         width="560"
         height="315"
-        src="https://www.youtube.com/embed/D-OYA2UzlJQ?si=p3dHHaOvHH8VrN1Z"
+        src="https://www.youtube.com/embed/oPeWP-AF2Yg?si=tY2pGrHvDBDn9l6m"
         title="YouTube video player"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         referrerPolicy="strict-origin-when-cross-origin"
