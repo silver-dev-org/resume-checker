@@ -48,7 +48,7 @@ export default function FeedbackForm({ data }: { data: FormState }) {
   return (
     <>
       <button
-        className="fixed right-0 p-4 bg-indigo-800 hover:bg-indigo-600 rounded-l bottom-40"
+        className="fixed right-0 p-4 bg-indigo-800 hover:bg-indigo-600 rounded-l bottom-40 shadow-md"
         onClick={() => setFeedbackFormOpen(true)}
       >
         Feedback
@@ -62,7 +62,7 @@ export default function FeedbackForm({ data }: { data: FormState }) {
           /** @ts-expect-error we are using css props the proper way */
           "--tw-translate-x": isFeedbackFormOpen ? 0 : "100%",
         }}
-        className={`fixed transition-transform translate-x-full right-0 top-0 h-full w-full md:w-1/2 bg-background p-8 md:border-l-2 border-black/30 dark:border-white/30 shadow-lg flex justify-between flex-col max-w-sm`}
+        className={`fixed transition-transform translate-x-full right-0 top-0 h-full w-full md:w-1/2 bg-background p-8 md:border-l-2 border-black/30 dark:border-white/30 shadow-lg flex justify-between flex-col max-w-md`}
       >
         <div className="flex flex-col">
           <button
