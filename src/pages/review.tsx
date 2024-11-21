@@ -82,23 +82,6 @@ export default function Review() {
     /* eslint-disable-next-line */
   }, [formState.formData, formState.url]);
 
-  function handleSubmission(event: FormEvent) {
-    event.preventDefault();
-  }
-
-  function handleInputChange(event: ChangeEvent) {
-    const formElement = event.currentTarget.parentElement;
-    if (!formElement || !(formElement instanceof HTMLFormElement)) return;
-    const formData = new FormData(formElement);
-    const honeypot = formData.get("name");
-
-    if (honeypot) {
-      return;
-    }
-
-    setFormState({ formData });
-  }
-
   return (
     <div className="mt-6 animate-fly-in container mx-auto px-4 grid lg:grid-cols-2 gap-6">
       <object
@@ -143,24 +126,13 @@ export default function Review() {
             />
           ) : null}
         </div>
-        <form onSubmit={handleSubmission}>
-          <label
-            htmlFor="resume"
-            className="px-10 py-2 text-center block rounded-lg bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer text-white"
-          >
-            Probá con otro CV
-          </label>
-          <input
-            onChange={handleInputChange}
-            className="sr-only"
-            id="resume"
-            name="resume"
-            type="file"
-            accept="application/pdf"
-          />
-          {/* honeypot */}
-          <input className="hidden" type="text" name="name" />
-        </form>
+
+        <Link
+          href="/"
+          className="px-10 py-2 text-center block rounded-lg bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer text-white"
+        >
+          Probá otra vez
+        </Link>
       </div>
       <hr className="w-full my-8 lg:col-span-2" />
       <h2 className="w-full my-8 text-3xl text-center lg:col-span-2">
