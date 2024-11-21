@@ -26,7 +26,7 @@ function getUrlFromFormUrl(url?: string) {
 
 export default function Review() {
   const router = useRouter();
-  const [formState, setFormState] = useFormState();
+  const [formState] = useFormState();
 
   const mutation = useMutation<
     FormState,
@@ -109,6 +109,11 @@ export default function Review() {
           <Score letter={mutation?.data?.grade} />
         </div>
         <div className="mb-8">
+          {mutation.isPending ? (
+            <p className="animate-pulse [animation-delay:3s] opacity-0 mb-4">
+              Está tomando un poco más de lo esperado... Procesando...
+            </p>
+          ) : null}
           {mutation.isPending ? <Skeleton /> : null}
           {mutation.data && mutation.data?.red_flags.length > 0 ? (
             <Flags
