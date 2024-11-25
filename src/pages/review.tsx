@@ -45,7 +45,7 @@ export default function Review() {
         });
       } else {
         res = await fetch("/api/grade?url=" + url, {
-          method: "POST",
+          method: "GET",
         });
       }
 

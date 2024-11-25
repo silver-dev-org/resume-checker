@@ -8,7 +8,10 @@ import pdf from "pdf-parse";
 import { TYPST_TEMPLATE_URL } from "@/utils";
 
 function isMultipartFormData(req: NextApiRequest) {
-  return req.headers["content-type"]?.includes("multipart/form-data");
+  return (
+    req.method === "POST" &&
+    req.headers["content-type"]?.includes("multipart/form-data")
+  );
 }
 
 const sResponse = {
@@ -152,16 +155,6 @@ ${GUIDE}
 
 ${NON_FLAGS}
 `;
-type CacheValue = {
-  cachedAt: number;
-  response: z.infer<typeof ResponseSchema>;
-};
-const cache = new Map<string, CacheValue>();
-const cacheDuration = 24 * 60 * 60 * 1000; // 24 hours in millis
-
-function isStale(cache: CacheValue) {
-  return Date.now() - cache.cachedAt > cacheDuration;
-}
 
 type ResponseData = z.infer<typeof ResponseSchema> | { error: string };
 
@@ -176,8 +169,7 @@ export default async function handler(
   res: NextApiResponse<ResponseData>,
 ) {
   try {
-    let shouldCache = false;
-    if (req.method !== "POST") {
+    if (!["POST", "GET"].includes(req.method || "")) {
       res.status(404).send({ error: "Not Found" });
       return;
     }
@@ -194,14 +186,15 @@ export default async function handler(
       if (!url || typeof url !== "string") {
         throw new Error("Tenes que proveer un archivo pdf o un url");
       }
-      const cached = cache.has(url) ? cache.get(url) : null;
 
-      if (url.startsWith("public") && cached && !isStale(cached)) {
-        res.status(200).json(cached.response);
-        return;
-      } else if (url.startsWith("public") && (!cached || isStale(cached))) {
+      if (url.startsWith("public")) {
         pdfBuffer = fs.readFileSync(path.join(process.cwd(), url));
-        shouldCache = true;
+        /* Set cache for a week only on the template resumes */
+        res.setHeader("Content-Location", url);
+        res.setHeader(
+          "Cache-Control",
+          "public, max-age=604800, stale-while-revalidate=604800",
+        );
       } else {
         pdfBuffer = Buffer.from(
           await fetch(url).then((response) => response.arrayBuffer()),
@@ -302,13 +295,6 @@ export default async function handler(
       throw new Error(
         "No se pudo completar la llamada a la inteligencia artificial",
       );
-    }
-
-    if (shouldCache) {
-      cache.set(req.query.url as string, {
-        cachedAt: Date.now(),
-        response: completion.object,
-      });
     }
 
     res.status(200).json(completion.object);
