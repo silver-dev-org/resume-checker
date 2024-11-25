@@ -3,6 +3,7 @@ import { Lato } from "next/font/google";
 import Link from "next/link";
 import Head from "next/head";
 import { type ReactNode } from "react";
+import { TYPST_TEMPLATE_URL } from "@/utils";
 const lato = Lato({ subsets: ["latin"], weight: "400" });
 
 export default function Layout({ children }: { children: ReactNode }) {
@@ -53,24 +54,34 @@ export default function Layout({ children }: { children: ReactNode }) {
       <main className="flex flex-col gap-8 row-start-2 items-center py-6 px-2 justify-center">
         {children}
       </main>
-      <footer className="border-t-2 border-t-gray-800 p-4 flex items-center justify-center gap-4">
+      <footer className="border-t-2 border-t-gray-800 p-4 grid grid-cols-6 gap-4 place-items-center">
+        <div className="col-span-4 col-start-2 flex items-center justify-center gap-4">
+          <Link
+            href="https://jobs.ashbyhq.com/Silver?utm_source=Pedw1mQEZd"
+            className="text-sm text-indigo-400 cursor-pointer hover:text-indigo-300"
+          >
+            Jobs
+          </Link>
+          <Link
+            href="https://ready.silver.dev/"
+            className="text-sm text-indigo-400 cursor-pointer hover:text-indigo-300"
+          >
+            Interview Ready
+          </Link>
+          <Link
+            href="privacy"
+            className="text-sm text-indigo-400 cursor-pointer hover:text-indigo-300"
+          >
+            Privacy Policy
+          </Link>
+        </div>
         <Link
-          href="https://jobs.ashbyhq.com/Silver?utm_source=Pedw1mQEZd"
-          className="text-sm text-indigo-400 cursor-pointer hover:text-indigo-300"
+          href={TYPST_TEMPLATE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="relative text-sm cursor-pointer text-white p-2 rounded font-bold bg-rose-600 hover:bg-rose-400"
         >
-          Jobs
-        </Link>
-        <Link
-          href="https://ready.silver.dev/"
-          className="text-sm text-indigo-400 cursor-pointer hover:text-indigo-300"
-        >
-          Interview Ready
-        </Link>
-        <Link
-          href="privacy"
-          className="text-sm text-indigo-400 cursor-pointer hover:text-indigo-300"
-        >
-          Privacy Policy
+          Template
         </Link>
       </footer>
     </div>
