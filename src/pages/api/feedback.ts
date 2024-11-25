@@ -41,8 +41,8 @@ export default async function handler(
     }
 
     const { error } = await resend.emails.send({
-      from: "Resume Checker <jenaro@checker.woodpecker.rocks>",
-      to: ["jen.calvineo@gmail.com"],
+      from: "Resume Checker <jenaro@resume.silver.dev>",
+      to: ["jen.calvineo@gmail.com", "info@silver.dev"],
       subject: "Resume Checker",
       react: FeedbackEmail({ yellow_flags, red_flags, grade, description }),
       attachments: attachment ? [attachment] : undefined,
@@ -56,7 +56,7 @@ export default async function handler(
   } catch (err) {
     console.error(err);
     res.status(500).send({
-      message: err instanceof Error ? err.message : "Error inesperado",
+      message: "Tuvimos un error inesperado al enviar tu mail, probá denuevo",
     });
   }
 }

@@ -8,7 +8,7 @@ import { sendGAEvent } from "@next/third-parties/google";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect } from "react";
 
 function getUrlFromFormData(formData?: FormData) {
   if (!formData) return "";
@@ -111,11 +111,6 @@ export default function Review() {
             <Score letter={mutation?.data?.grade} />
           </div>
           <div className="mb-8">
-            {mutation.isPending ? (
-              <p className="animate-pulse [animation-delay:3s] opacity-0 mb-4">
-                Está tomando un poco más de lo esperado... Procesando...
-              </p>
-            ) : null}
             {mutation.isPending ? <Skeleton /> : null}
             {mutation.data && mutation.data?.red_flags.length > 0 ? (
               <Flags
@@ -134,12 +129,19 @@ export default function Review() {
             ) : null}
           </div>
 
-          <Link
-            href="/"
-            className="px-10 py-2 text-center block rounded-lg bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer text-white"
-          >
-            Probá otra vez
-          </Link>
+          {mutation.isPending ? (
+            <p className="opacity-0 animate-[fadeIn_200ms_ease-in_3s_forwards] px-4 py-2 text-center bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-semibold rounded-lg shadow-md border border-gray-300 dark:border-gray-700">
+              <span className="mr-2 text-blue-500 dark:text-blue-400">●</span>
+              Un poco más, estamos procesando tu cv...
+            </p>
+          ) : (
+            <Link
+              href="/"
+              className="px-10 py-2 text-center block rounded-lg bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer text-white"
+            >
+              Probá otra vez
+            </Link>
+          )}
         </div>
         <hr className="w-full my-8 lg:col-span-2" />
         <h2 className="w-full my-6 text-3xl text-center lg:col-span-2">

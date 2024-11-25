@@ -25,7 +25,7 @@ const aResponse = {
       "Incluir tecnologías en el título o subtítulo del CV, lo que hace que parezca relleno.",
       "Usar un correo en Hotmail, proyecta una imagen anticuada.",
       "Incluir el domicilio completo en el CV; basta con mencionar ciudad y país si es relevante.",
-      "Formato y diseño: El CV parece no seguir el estilo recomendado para Estados Unidos (como Latex o un generador similar), lo que puede restarle profesionalismo. Usá el [template de silver.dev](https://typst.app/?template=silver-dev-cv&version=1.0.0).",
+      "Formato y diseño: El CV parece no seguir el estilo recomendado para Estados Unidos (como Latex o un generador similar), lo que puede restarle profesionalismo. Usá el [template de silver.dev](https://typst.app/?template=silver-dev-cv).",
     ],
     red_flags: [
       "Incluir la fecha de nacimiento, es innecesario y puede dar lugar a sesgos.",
@@ -55,7 +55,7 @@ const cResponse = {
   object: {
     grade: "C",
     red_flags: [
-      "Formato y diseño: El CV parece no seguir el estilo recomendado para Estados Unidos (como Latex o un generador similar), lo que puede restarle profesionalismo. Usá el [template de silver.dev](https://typst.app/?template=silver-dev-cv&version=1.0.0).",
+      "Formato y diseño: El CV parece no seguir el estilo recomendado para Estados Unidos (como Latex o un generador similar), lo que puede restarle profesionalismo. Usá el [template de silver.dev](https://typst.app/?template=silver-dev-cv).",
       "Posible uso de Word u otro procesador anticuado: Si el CV fue hecho en Word o con un formato que no luce profesional, puede ser un motivo de rechazo en algunos casos.",
       "Uso de imágenes: Las empresas en Estados Unidos consideran inapropiado incluir imágenes en el CV, ya que esto no es estándar y puede generar una percepción negativa.",
       "Representación de habilidades en porcentajes: Mostrar habilidades con porcentajes es desaconsejable, ya que no comunica de manera clara el nivel real de competencia y puede dar lugar a malinterpretaciones. Se prefiere un formato que indique los conocimientos y experiencia de forma descriptiva.",
@@ -80,7 +80,7 @@ const GUIDE = `
   - Formato
     - Usá un template
       - Google Docs tiene una buena plantilla para empezar que es fácil de usar y está bien estéticamente
-      - A las empresas en USA les gusta el CV en estilo Latex, podés usar un builder estilo Latex como Typst y usá el [template de silver.dev](https://typst.app/?template=silver-dev-cv&version=1.0.0).
+      - A las empresas en USA les gusta el CV en estilo Latex, podés usar un builder estilo Latex como Typst y usá el [template de silver.dev](https://typst.app/?template=silver-dev-cv).
     - Los diseños creativos y entregados en Word le bajan la calidad a tu CV y hasta pueden llegar a ser motivos de rechazo.
     - Tiene que ser en una sola página.
   - Contenido principal
