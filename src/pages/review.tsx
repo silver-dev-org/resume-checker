@@ -59,13 +59,13 @@ export default function Review() {
       return res.json();
     },
     onMutate: () => {
-      sendGAEvent("event", "submission");
+      sendGAEvent("event", "resume-checker-submission");
     },
     onSuccess: (data) => {
-      sendGAEvent("event", "success", data);
+      sendGAEvent("event", "resume-checker-success", data);
     },
     onError: (e) => {
-      sendGAEvent("event", "error", e);
+      sendGAEvent("event", "resume-checker-error", e);
 
       router.push("/");
     },
