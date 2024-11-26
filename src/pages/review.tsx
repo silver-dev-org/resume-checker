@@ -125,6 +125,7 @@ export default function Review() {
                 </Link>{" "}
                 con la siguiente{" "}
                 <Link
+                  target="_blank"
                   href="https://docs.silver.dev/interview-ready/soft-fundamentals/preparando-el-cv"
                   className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
                 >
