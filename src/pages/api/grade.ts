@@ -5,9 +5,13 @@ import { google } from "@ai-sdk/google";
 import fs from "node:fs";
 import path from "node:path";
 import pdf from "pdf-parse";
+import { TYPST_TEMPLATE_URL } from "@/utils";
 
 function isMultipartFormData(req: NextApiRequest) {
-  return req.headers["content-type"]?.includes("multipart/form-data");
+  return (
+    req.method === "POST" &&
+    req.headers["content-type"]?.includes("multipart/form-data")
+  );
 }
 
 const sResponse = {
@@ -25,7 +29,7 @@ const aResponse = {
       "Incluir tecnologías en el título o subtítulo del CV, lo que hace que parezca relleno.",
       "Usar un correo en Hotmail, proyecta una imagen anticuada.",
       "Incluir el domicilio completo en el CV; basta con mencionar ciudad y país si es relevante.",
-      "Formato y diseño: El CV parece no seguir el estilo recomendado para Estados Unidos (como Latex o un generador similar), lo que puede restarle profesionalismo. Usá el [template de silver.dev](https://typst.app/?template=silver-dev-cv).",
+      `Formato y diseño: El CV parece no seguir el estilo recomendado para Estados Unidos (como Latex o un generador similar), lo que puede restarle profesionalismo. Usá el [template de silver.dev](${TYPST_TEMPLATE_URL}).`,
     ],
     red_flags: [
       "Incluir la fecha de nacimiento, es innecesario y puede dar lugar a sesgos.",
@@ -55,7 +59,7 @@ const cResponse = {
   object: {
     grade: "C",
     red_flags: [
-      "Formato y diseño: El CV parece no seguir el estilo recomendado para Estados Unidos (como Latex o un generador similar), lo que puede restarle profesionalismo. Usá el [template de silver.dev](https://typst.app/?template=silver-dev-cv).",
+      `Formato y diseño: El CV parece no seguir el estilo recomendado para Estados Unidos (como Latex o un generador similar), lo que puede restarle profesionalismo. Usá el [template de silver.dev](${TYPST_TEMPLATE_URL}).`,
       "Posible uso de Word u otro procesador anticuado: Si el CV fue hecho en Word o con un formato que no luce profesional, puede ser un motivo de rechazo en algunos casos.",
       "Uso de imágenes: Las empresas en Estados Unidos consideran inapropiado incluir imágenes en el CV, ya que esto no es estándar y puede generar una percepción negativa.",
       "Representación de habilidades en porcentajes: Mostrar habilidades con porcentajes es desaconsejable, ya que no comunica de manera clara el nivel real de competencia y puede dar lugar a malinterpretaciones. Se prefiere un formato que indique los conocimientos y experiencia de forma descriptiva.",
@@ -80,7 +84,7 @@ const GUIDE = `
   - Formato
     - Usá un template
       - Google Docs tiene una buena plantilla para empezar que es fácil de usar y está bien estéticamente
-      - A las empresas en USA les gusta el CV en estilo Latex, podés usar un builder estilo Latex como Typst y usá el [template de silver.dev](https://typst.app/?template=silver-dev-cv).
+      - A las empresas en USA les gusta el CV en estilo Latex, podés usar un builder estilo Latex como Typst y usá el [template de silver.dev](${TYPST_TEMPLATE_URL}).
     - Los diseños creativos y entregados en Word le bajan la calidad a tu CV y hasta pueden llegar a ser motivos de rechazo.
     - Tiene que ser en una sola página.
   - Contenido principal
@@ -151,16 +155,6 @@ ${GUIDE}
 
 ${NON_FLAGS}
 `;
-type CacheValue = {
-  cachedAt: number;
-  response: z.infer<typeof ResponseSchema>;
-};
-const cache = new Map<string, CacheValue>();
-const cacheDuration = 24 * 60 * 60 * 1000; // 24 hours in millis
-
-function isStale(cache: CacheValue) {
-  return Date.now() - cache.cachedAt > cacheDuration;
-}
 
 type ResponseData = z.infer<typeof ResponseSchema> | { error: string };
 
@@ -175,8 +169,7 @@ export default async function handler(
   res: NextApiResponse<ResponseData>,
 ) {
   try {
-    let shouldCache = false;
-    if (req.method !== "POST") {
+    if (!["POST", "GET"].includes(req.method || "")) {
       res.status(404).send({ error: "Not Found" });
       return;
     }
@@ -193,14 +186,15 @@ export default async function handler(
       if (!url || typeof url !== "string") {
         throw new Error("Tenes que proveer un archivo pdf o un url");
       }
-      const cached = cache.has(url) ? cache.get(url) : null;
 
-      if (url.startsWith("public") && cached && !isStale(cached)) {
-        res.status(200).json(cached.response);
-        return;
-      } else if (url.startsWith("public") && (!cached || isStale(cached))) {
+      if (url.startsWith("public")) {
         pdfBuffer = fs.readFileSync(path.join(process.cwd(), url));
-        shouldCache = true;
+        /* Set cache for a week only on the template resumes */
+        res.setHeader("Content-Location", url);
+        res.setHeader(
+          "Cache-Control",
+          "public, max-age=604800, stale-while-revalidate=604800",
+        );
       } else {
         pdfBuffer = Buffer.from(
           await fetch(url).then((response) => response.arrayBuffer()),
@@ -301,13 +295,6 @@ export default async function handler(
       throw new Error(
         "No se pudo completar la llamada a la inteligencia artificial",
       );
-    }
-
-    if (shouldCache) {
-      cache.set(req.query.url as string, {
-        cachedAt: Date.now(),
-        response: completion.object,
-      });
     }
 
     res.status(200).json(completion.object);
