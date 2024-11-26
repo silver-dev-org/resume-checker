@@ -41,88 +41,95 @@ export default function FeedbackForm({ data }: { data: FormState }) {
       formData.set("resume", file);
     }
 
-    feedbackMutation.mutate({ formData });
-    form.reset();
+    feedbackMutation.mutate({ formData }, { onSuccess: form.reset });
+  }
+
+  function close() {
+    setFeedbackFormOpen(false);
   }
 
   return (
     <>
       <button
-        className="fixed right-0 p-4 bg-indigo-800 hover:bg-indigo-600 rounded-l bottom-40 shadow-md"
+        className={`fixed transition right-0 p-4 bg-indigo-800 hover:bg-indigo-600 rounded-l bottom-40 shadow-md text-white ${isFeedbackFormOpen ? "translate-x-full" : "translate-x-0"}`}
         onClick={() => setFeedbackFormOpen(true)}
       >
         Feedback
       </button>
-      <form
-        action="/api/feedback"
-        method="POST"
-        encType="multipart/form-data"
-        onSubmit={handleFeedbackSubmission}
-        style={{
-          /** @ts-expect-error we are using css props the proper way */
-          "--tw-translate-x": isFeedbackFormOpen ? 0 : "100%",
-        }}
-        className={`fixed transition-transform translate-x-full right-0 top-0 h-full w-full md:w-1/2 bg-background p-8 md:border-l-2 border-black/30 dark:border-white/30 shadow-lg flex justify-between flex-col max-w-md`}
+      <div
+        className={`fixed inset-0 transition bg-gray-900/20 dark:bg-gray-100/20 ${isFeedbackFormOpen ? "opacity-100" : "pointer-events-none opacity-0"}`}
+        onClick={close}
       >
-        <div className="flex flex-col">
-          <button
-            className="text-xl w-max self-end mb-4"
-            type="button"
-            onClick={() => setFeedbackFormOpen(false)}
-          >
-            &times;
-          </button>
-          {feedbackMutation.error ? (
-            <p className="text-red-400">{feedbackMutation.error.message}</p>
-          ) : null}
-        </div>
-
-        <input type="hidden" name="url" value={formState.url} />
-        <input type="hidden" name="grade" value={data.grade} />
-        <input
-          type="hidden"
-          name="yellow_flags"
-          value={JSON.stringify(data.yellow_flags)}
-        />
-        <input
-          type="hidden"
-          name="red_flags"
-          value={JSON.stringify(data.red_flags)}
-        />
-        <div>
-          <label htmlFor="description" className="mb-2 block">
-            Descripción:
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            placeholder="Una descripción breve..."
-            className="w-full mb-4 rounded p-2 border border-gray-400 bg-white/10"
-            rows={10}
-          ></textarea>
-          <div className="flex items-center gap-2 mb-4">
-            <label htmlFor="consent" className="w-full">
-              Acepto que mi CV y el contenido del feedback proporcionado sean
-              compartidos únicamente con el equipo de desarrollo de la
-              herramienta Resume Checker con el propósito de mejorar el
-              servicio.
-            </label>
-            <input
-              type="checkbox"
-              name="consent"
-              id="consent"
-              required
-              onChange={(e) => setHasConsented(e.target.checked)}
-            />
+        <form
+          action="/api/feedback"
+          method="POST"
+          encType="multipart/form-data"
+          onSubmit={handleFeedbackSubmission}
+          onClick={(e) => e.stopPropagation()}
+          className={`fixed transition-transform left-0 top-0 h-full w-full md:h-max md:rounded md:-translate-x-1/2 md:-translate-y-1/2 md:top-1/2 md:left-1/2 bg-background px-6 py-4 shadow-lg flex justify-between flex-col max-w-md`}
+        >
+          <div className="flex flex-col">
+            <button
+              className="text-xl w-max self-end mb-4"
+              type="button"
+              onClick={close}
+            >
+              &times;
+            </button>
+            {feedbackMutation.error ? (
+              <p className="text-red-400 mb-4">
+                {feedbackMutation.error.message}
+              </p>
+            ) : null}
           </div>
-          <button
-            disabled={feedbackMutation.isPending || !hasConsented}
-            className="w-full px-10 disabled:bg-indigo-300 py-2 text-center block rounded bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer text-white"
-          >
-            Enviar Feedback
-          </button>
-        </div>
-      </form>
+
+          <input type="hidden" name="url" value={formState.url} />
+          <input type="hidden" name="grade" value={data.grade} />
+          <input
+            type="hidden"
+            name="yellow_flags"
+            value={JSON.stringify(data.yellow_flags)}
+          />
+          <input
+            type="hidden"
+            name="red_flags"
+            value={JSON.stringify(data.red_flags)}
+          />
+          <div>
+            <label htmlFor="description" className="mb-2 block">
+              Descripción:
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              placeholder="Una descripción breve..."
+              className="w-full mb-4 rounded p-2 border border-gray-400 bg-white/10"
+              rows={10}
+            ></textarea>
+            <div className="flex items-center gap-2 mb-4">
+              <label htmlFor="consent" className="w-full">
+                Acepto que mi CV y el contenido del feedback proporcionado sean
+                compartidos únicamente con el equipo de desarrollo de la
+                herramienta Resume Checker con el propósito de mejorar el
+                servicio.
+              </label>
+              <input
+                type="checkbox"
+                name="consent"
+                id="consent"
+                required
+                onChange={(e) => setHasConsented(e.target.checked)}
+              />
+            </div>
+            <button
+              disabled={feedbackMutation.isPending || !hasConsented}
+              className="w-full px-10 disabled:bg-indigo-300 py-2 text-center block rounded bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer text-white"
+            >
+              Enviar Feedback
+            </button>
+          </div>
+        </form>
+      </div>
     </>
   );
 }
