@@ -41,7 +41,7 @@ export default function Score({ letter }: { letter?: string }) {
         {letterKeys.map((l) => (
           <span
             key={l}
-            className={`md:text-xl font-bold w-16 h-16 md:w-20 md:h-20 flex items-center justify-center ${letterColors[l]} ${loadingStyles(l)}`}
+            className={`md:text-xl text-white font-bold w-16 h-16 md:w-20 md:h-20 flex items-center justify-center ${letterColors[l]} ${loadingStyles(l)}`}
           >
             {l}
           </span>

@@ -82,6 +82,8 @@ export default function Review() {
     /* eslint-disable-next-line */
   }, [formState.formData, formState.url]);
 
+  const isVictorVigon = formState.url === "public/s_resume.pdf";
+
   return (
     <div className="mt-6 animate-fly-in container mx-auto px-4 grid lg:grid-cols-2 gap-6">
       <object
@@ -110,6 +112,24 @@ export default function Review() {
         </div>
         <div className="mb-8">
           {mutation.isPending ? <Skeleton /> : null}
+          {!mutation.isPending && isVictorVigon ? (
+            <p>
+              Este resume fue elaborado en{" "}
+              <Link
+                href="https://ready.silver.dev"
+                className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
+              >
+                Interview Ready
+              </Link>{" "}
+              con la siguiente{" "}
+              <Link
+                href="https://docs.silver.dev"
+                className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
+              >
+                guía
+              </Link>
+            </p>
+          ) : null}
           {mutation.data && mutation.data?.red_flags.length > 0 ? (
             <Flags
               flags={mutation.data.red_flags}
@@ -146,7 +166,7 @@ export default function Review() {
         Resume Checker es de{" "}
         <Link
           href="https://ready.silver.dev"
-          className="text-indigo-400 hover:text-indigo-300 cursor-pointer"
+          className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 cursor-pointer"
         >
           Interview Ready
         </Link>
