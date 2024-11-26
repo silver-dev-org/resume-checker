@@ -16,8 +16,11 @@ export default function Layout({ children }: { children: ReactNode }) {
       <Head>
         <title>Resume checker</title>
       </Head>
-      <header className="grid grid-rows-1 md:grid-rows-1 grid-cols-2 md:grid-cols-3 border-b-gray-800 border-b-solid border-b-2 py-4 px-4 md:px-6 gap-y-4 justify-between">
-        <Link href="/" className="text-xl flex gap-2 items-center text-nowrap">
+      <header className="grid grid-cols-12 border-b-gray-800 border-b-solid border-b-2 py-4 px-6">
+        <Link
+          href="/"
+          className="text-xl flex gap-2 items-center text-nowrap col-span-3"
+        >
           <Image
             className="invert dark:invert-0"
             src="/images/logo-white.svg"
@@ -28,27 +31,27 @@ export default function Layout({ children }: { children: ReactNode }) {
           Resume Checker
         </Link>
 
-        <div className="flex items-center justify-center gap-4 row-start-2 md:row-start-1 col-span-2 md:col-span-1 md:col-start-2">
+        <div className="hidden md:flex items-center justify-center gap-4 col-span-6">
           <Link
             href="https://jobs.ashbyhq.com/Silver?utm_source=Pedw1mQEZd"
-            className="text-sm text-white hover:text-white/80 cursor-pointer hover:text-indigo-300"
+            className="text-sm dark:text-white hover:text-black/80 dark:hover:text-white/80 cursor-pointer hover:text-indigo-300"
           >
             Jobs
           </Link>
           <Link
             href="https://ready.silver.dev/"
-            className="text-sm text-white hover:text-white/80 cursor-pointer hover:text-indigo-300"
+            className="text-sm dark:text-white hover:text-black/80 dark:hover:text-white/80 cursor-pointer hover:text-indigo-300"
           >
             Interview Ready
           </Link>
           <Link
             href="privacy"
-            className="text-sm text-white hover:text-white/80 cursor-pointer hover:text-indigo-300"
+            className="text-sm dark:text-white hover:text-black/80 dark:hover:text-white/80 cursor-pointer hover:text-indigo-300"
           >
             Privacy Policy
           </Link>
         </div>
-        <div className="flex items-center gap-2 md:gap-4 justify-end">
+        <div className="hidden md:flex items-center gap-4 justify-end col-span-3">
           <Link
             href={TYPST_TEMPLATE_URL}
             target="_blank"
