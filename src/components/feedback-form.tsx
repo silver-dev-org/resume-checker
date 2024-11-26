@@ -66,7 +66,7 @@ export default function FeedbackForm({ data }: { data: FormState }) {
           encType="multipart/form-data"
           onSubmit={handleFeedbackSubmission}
           onClick={(e) => e.stopPropagation()}
-          className={`fixed transition-transform left-0 top-0 h-full w-full md:h-max md:rounded md:-translate-x-1/2 md:-translate-y-1/2 md:top-1/2 md:left-1/2 bg-background px-6 py-4 shadow-lg flex justify-between flex-col max-w-md`}
+          className={`fixed transition-transform left-0 top-0 h-full w-full sm:h-max sm:rounded sm:-translate-x-1/2 sm:-translate-y-1/2 sm:top-1/2 sm:left-1/2 bg-background px-6 py-4 shadow-lg flex justify-between flex-col sm:max-w-md`}
         >
           <div className="flex flex-col">
             <button
