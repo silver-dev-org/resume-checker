@@ -66,11 +66,11 @@ export default function FeedbackForm({ data }: { data: FormState }) {
           encType="multipart/form-data"
           onSubmit={handleFeedbackSubmission}
           onClick={(e) => e.stopPropagation()}
-          className={`fixed transition-transform left-0 top-0 h-full w-full sm:h-max sm:rounded sm:-translate-x-1/2 sm:-translate-y-1/2 sm:top-1/2 sm:left-1/2 bg-background px-6 py-4 shadow-lg flex justify-between flex-col sm:max-w-md`}
+          className={`fixed transition-transform left-0 top-0 h-full w-full sm:h-max sm:rounded-lg sm:-translate-x-1/2 sm:-translate-y-1/2 sm:top-1/2 sm:left-1/2 bg-background p-10 shadow-lg flex justify-between flex-col sm:max-w-xl`}
         >
           <div className="flex flex-col">
             <button
-              className="text-xl w-max self-end mb-4"
+              className="text-2xl w-max self-end relative -top-4"
               type="button"
               onClick={close}
             >
@@ -95,23 +95,24 @@ export default function FeedbackForm({ data }: { data: FormState }) {
             name="red_flags"
             value={JSON.stringify(data.red_flags)}
           />
+          <h3 className="text-center text-2xl font-bold mb-auto sm:mb-6">
+            Gracias por tu feedback
+          </h3>
           <div>
-            <label htmlFor="description" className="mb-2 block">
-              Descripción:
-            </label>
             <textarea
+              aria-label="Descripción"
               id="description"
               name="description"
               placeholder="Una descripción breve..."
               className="w-full mb-4 rounded p-2 border border-gray-400 bg-white/10"
               rows={10}
             ></textarea>
-            <div className="flex items-center gap-2 mb-4">
-              <label htmlFor="consent" className="w-full">
-                Acepto que mi CV y el contenido del feedback proporcionado sean
-                compartidos únicamente con el equipo de desarrollo de la
-                herramienta Resume Checker con el propósito de mejorar el
-                servicio.
+            <div className="flex items-center gap-3 mb-4">
+              <label
+                htmlFor="consent"
+                className="w-full order-2 text-sm font-bold select-none"
+              >
+                Acepto que mi CV sea compartido con el equipo de Resume Checker.
               </label>
               <input
                 type="checkbox"
@@ -123,7 +124,7 @@ export default function FeedbackForm({ data }: { data: FormState }) {
             </div>
             <button
               disabled={feedbackMutation.isPending || !hasConsented}
-              className="w-full px-10 disabled:bg-indigo-300 py-2 text-center block rounded bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer text-white"
+              className="w-full px-10 disabled:bg-indigo-800/50 disabled:cursor-not-allowed disabled:text-gray-300 py-2 text-center block rounded bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer text-white"
             >
               Enviar Feedback
             </button>
