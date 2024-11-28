@@ -7,8 +7,6 @@ import path from "node:path";
 import pdf from "pdf-parse";
 import { TYPST_TEMPLATE_URL } from "@/utils";
 
-export const maxDuration = 60;
-
 function isMultipartFormData(req: NextApiRequest) {
   return (
     req.method === "POST" &&
@@ -309,7 +307,7 @@ export default async function handler(
 }
 
 export const config = {
-  maxDuration: 30,
+  maxDuration: 60,
   api: {
     bodyParser: false,
   },
