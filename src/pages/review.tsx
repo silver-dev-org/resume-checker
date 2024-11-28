@@ -90,7 +90,7 @@ export default function Review() {
     <>
       <div className="mt-6 animate-fly-in container mx-auto px-4 grid lg:grid-cols-2 gap-6">
         <object
-          className="rounded-lg overflow-hidden mb-8 border-2 border-black/30 dark:border-white/30 h-full lg:min-h-[500px]"
+          className="rounded-lg hidden lg:block overflow-hidden mb-8 border-2 border-black/30 dark:border-white/30 h-full lg:min-h-[500px]"
           type="application/pdf"
           data={
             formState.formData
