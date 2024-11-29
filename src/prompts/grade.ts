@@ -5,49 +5,57 @@ import { type CoreMessage } from "ai";
 import { TYPST_TEMPLATE_URL } from "@/utils";
 
 const sResponse = {
-  grade: "S",
-  yellow_flags: [],
-  red_flags: [],
+  object: {
+    grade: "S",
+    yellow_flags: [],
+    red_flags: [],
+  },
 };
 
 const aResponse = {
-  grade: "A",
-  yellow_flags: [
-    "Incluir tecnologías en el título o subtítulo del CV, lo que hace que parezca relleno.",
-    "Usar un correo en Hotmail, proyecta una imagen anticuada.",
-    "Incluir el domicilio completo en el CV; basta con mencionar ciudad y país si es relevante.",
-    `Formato y diseño: El CV parece no seguir el estilo recomendado para Estados Unidos (como Latex o un generador similar), lo que puede restarle profesionalismo. Usá el [template de silver.dev](${TYPST_TEMPLATE_URL}).`,
-  ],
-  red_flags: [
-    "Incluir la fecha de nacimiento, es innecesario y puede dar lugar a sesgos.",
-    "Incluir detalles irrelevantes ('fluff') en la sección de Mercado Libre, lo que hace que el CV sea menos conciso y directo.",
-  ],
+  object: {
+    grade: "A",
+    yellow_flags: [
+      "Incluir tecnologías en el título o subtítulo del CV, lo que hace que parezca relleno.",
+      "Usar un correo en Hotmail, proyecta una imagen anticuada.",
+      "Incluir el domicilio completo en el CV; basta con mencionar ciudad y país si es relevante.",
+      `Formato y diseño: El CV parece no seguir el estilo recomendado para Estados Unidos (como Latex o un generador similar), lo que puede restarle profesionalismo. Usá el [template de silver.dev](${TYPST_TEMPLATE_URL}).`,
+    ],
+    red_flags: [
+      "Incluir la fecha de nacimiento, es innecesario y puede dar lugar a sesgos.",
+      "Incluir detalles irrelevantes ('fluff') en la sección de Mercado Libre, lo que hace que el CV sea menos conciso y directo.",
+    ],
+  },
 };
 
 const bResponse = {
-  grade: "B",
-  yellow_flags: [
-    "La sección de habilidades es extensa y poco específica. Te recomiendo que la ajustes a la descripción del puesto al que te postulás, incluyendo las habilidades más relevantes y omitiendo las menos importantes o redundantes.",
-    "Se menciona 'AWS' dos veces en la sección de habilidades, lo cual puede percibirse como un descuido o falta de organización.",
-    "Mencionás que tus estudios universitarios están incompletos. Si bien no es un impedimento, te recomiendo que no lo hagas.",
-    "El proyecto 'MercadoCat' podría detallarse un poco más. Describí las tecnologías que usaste, el impacto que tuvo y cualquier otro detalle relevante que demuestre tus habilidades y experiencia.",
-  ],
-  red_flags: [
-    "En la sección 'Acerca de', podrías mencionar tus logros y cómo estos se alinean con las necesidades de la empresa a la que te postulás. Palabras como 'proactive', 'smart' y 'opportunities to grow' no demuestran nada, tenés que demostrar que sos el candidato que la empresa quiere.",
-    "Las experiencias listadas en el CV no especifican logros concretos, métricas o resultados obtenidos en los proyectos. Sería ideal incluir métricas que reflejen impacto, como 'mejoré el tiempo de carga en un X%' o 'aumenté la eficiencia del backend en un Y%.'",
-    "Inconsistencia en el uso del inglés: En la sección de 'EXPERIENCE' hay errores menores de inglés, como 'Particpated' en lugar de 'Participated'. Esto puede afectar la impresión profesional y dar una apariencia de falta de atención al detalle.",
-  ],
+  object: {
+    grade: "B",
+    yellow_flags: [
+      "La sección de habilidades es extensa y poco específica. Te recomiendo que la ajustes a la descripción del puesto al que te postulás, incluyendo las habilidades más relevantes y omitiendo las menos importantes o redundantes.",
+      "Se menciona 'AWS' dos veces en la sección de habilidades, lo cual puede percibirse como un descuido o falta de organización.",
+      "Mencionás que tus estudios universitarios están incompletos. Si bien no es un impedimento, te recomiendo que no lo hagas.",
+      "El proyecto 'MercadoCat' podría detallarse un poco más. Describí las tecnologías que usaste, el impacto que tuvo y cualquier otro detalle relevante que demuestre tus habilidades y experiencia.",
+    ],
+    red_flags: [
+      "En la sección 'Acerca de', podrías mencionar tus logros y cómo estos se alinean con las necesidades de la empresa a la que te postulás. Palabras como 'proactive', 'smart' y 'opportunities to grow' no demuestran nada, tenés que demostrar que sos el candidato que la empresa quiere.",
+      "Las experiencias listadas en el CV no especifican logros concretos, métricas o resultados obtenidos en los proyectos. Sería ideal incluir métricas que reflejen impacto, como 'mejoré el tiempo de carga en un X%' o 'aumenté la eficiencia del backend en un Y%.'",
+      "Inconsistencia en el uso del inglés: En la sección de 'EXPERIENCE' hay errores menores de inglés, como 'Particpated' en lugar de 'Participated'. Esto puede afectar la impresión profesional y dar una apariencia de falta de atención al detalle.",
+    ],
+  },
 };
 
 const cResponse = {
-  grade: "C",
-  red_flags: [
-    `Formato y diseño: El CV parece no seguir el estilo recomendado para Estados Unidos (como Latex o un generador similar), lo que puede restarle profesionalismo. Usá el [template de silver.dev](${TYPST_TEMPLATE_URL}).`,
-    "Posible uso de Word u otro procesador anticuado: Si el CV fue hecho en Word o con un formato que no luce profesional, puede ser un motivo de rechazo en algunos casos.",
-    "Uso de imágenes: Las empresas en Estados Unidos consideran inapropiado incluir imágenes en el CV, ya que esto no es estándar y puede generar una percepción negativa.",
-    "Representación de habilidades en porcentajes: Mostrar habilidades con porcentajes es desaconsejable, ya que no comunica de manera clara el nivel real de competencia y puede dar lugar a malinterpretaciones. Se prefiere un formato que indique los conocimientos y experiencia de forma descriptiva.",
-  ],
-  yellow_flags: [],
+  object: {
+    grade: "C",
+    red_flags: [
+      `Formato y diseño: El CV parece no seguir el estilo recomendado para Estados Unidos (como Latex o un generador similar), lo que puede restarle profesionalismo. Usá el [template de silver.dev](${TYPST_TEMPLATE_URL}).`,
+      "Posible uso de Word u otro procesador anticuado: Si el CV fue hecho en Word o con un formato que no luce profesional, puede ser un motivo de rechazo en algunos casos.",
+      "Uso de imágenes: Las empresas en Estados Unidos consideran inapropiado incluir imágenes en el CV, ya que esto no es estándar y puede generar una percepción negativa.",
+      "Representación de habilidades en porcentajes: Mostrar habilidades con porcentajes es desaconsejable, ya que no comunica de manera clara el nivel real de competencia y puede dar lugar a malinterpretaciones. Se prefiere un formato que indique los conocimientos y experiencia de forma descriptiva.",
+    ],
+    yellow_flags: [],
+  },
 };
 
 const NON_FLAGS = `
@@ -139,11 +147,12 @@ ${GUIDE}
 ${NON_FLAGS}
 `;
 
-function createExampleInputAndResponse(
-  url: string,
-  response: { grade: string; yellow_flags: string[]; red_flags: string[] },
+export function messages(
+  parsed: PdfParse.Result,
+  pdfBuffer: Buffer,
 ): CoreMessage[] {
   return [
+    { role: "system", content: sysPrompt(parsed?.info?.Author) },
     {
       role: "user",
       content: [
@@ -153,28 +162,68 @@ function createExampleInputAndResponse(
         },
         {
           type: "file",
-          data: fs.readFileSync(path.join(process.cwd(), url)),
+          data: fs.readFileSync(
+            path.join(process.cwd(), "public/s_resume.pdf"),
+          ),
           mimeType: "application/pdf",
         },
       ],
     },
     {
       role: "assistant",
-      content: JSON.stringify({ object: response }),
+      content: JSON.stringify(sResponse),
     },
-  ];
-}
-
-export function messages(
-  parsed: PdfParse.Result,
-  pdfBuffer: Buffer,
-): CoreMessage[] {
-  return [
-    { role: "system", content: sysPrompt(parsed?.info?.Author) },
-    ...createExampleInputAndResponse("public/s_resume.pdf", sResponse),
-    ...createExampleInputAndResponse("public/a_resume.pdf", aResponse),
-    ...createExampleInputAndResponse("public/b_resume.pdf", bResponse),
-    ...createExampleInputAndResponse("public/c_resume.pdf", cResponse),
+    {
+      role: "user",
+      content: [
+        { type: "text", text: userPrompt },
+        {
+          type: "file",
+          data: fs.readFileSync(
+            path.join(process.cwd(), "public/a_resume.pdf"),
+          ),
+          mimeType: "application/pdf",
+        },
+      ],
+    },
+    {
+      role: "assistant",
+      content: JSON.stringify(aResponse),
+    },
+    {
+      role: "user",
+      content: [
+        { type: "text", text: userPrompt },
+        {
+          type: "file",
+          data: fs.readFileSync(
+            path.join(process.cwd(), "public/b_resume.pdf"),
+          ),
+          mimeType: "application/pdf",
+        },
+      ],
+    },
+    {
+      role: "assistant",
+      content: JSON.stringify(bResponse),
+    },
+    {
+      role: "user",
+      content: [
+        { type: "text", text: userPrompt },
+        {
+          type: "file",
+          data: fs.readFileSync(
+            path.join(process.cwd(), "public/c_resume.pdf"),
+          ),
+          mimeType: "application/pdf",
+        },
+      ],
+    },
+    {
+      role: "assistant",
+      content: JSON.stringify(cResponse),
+    },
     {
       role: "user",
       content: [
