@@ -1,16 +1,16 @@
-import { TYPST_TEMPLATE_URL } from "@/utils";
-import { CoreMessage } from "ai";
-import fs from "node:fs";
 import path from "node:path";
+import fs from "node:fs";
+import { type CoreMessage } from "ai";
 import PdfParse from "pdf-parse";
+import { TYPST_TEMPLATE_URL } from "@/utils";
 
-export const sResponse = {
+const sResponse = {
   grade: "S",
   yellow_flags: [],
   red_flags: [],
 };
 
-export const aResponse = {
+const aResponse = {
   grade: "A",
   yellow_flags: [
     "Incluir tecnologías en el título o subtítulo del CV, lo que hace que parezca relleno.",
@@ -24,7 +24,7 @@ export const aResponse = {
   ],
 };
 
-export const bResponse = {
+const bResponse = {
   grade: "B",
   yellow_flags: [
     "La sección de habilidades es extensa y poco específica. Te recomiendo que la ajustes a la descripción del puesto al que te postulás, incluyendo las habilidades más relevantes y omitiendo las menos importantes o redundantes.",
@@ -39,7 +39,7 @@ export const bResponse = {
   ],
 };
 
-export const cResponse = {
+const cResponse = {
   grade: "C",
   red_flags: [
     `Formato y diseño: El CV parece no seguir el estilo recomendado para Estados Unidos (como Latex o un generador similar), lo que puede restarle profesionalismo. Usá el [template de silver.dev](${TYPST_TEMPLATE_URL}).`,
