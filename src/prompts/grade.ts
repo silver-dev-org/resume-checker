@@ -139,7 +139,14 @@ ${GUIDE}
 ${NON_FLAGS}
 `;
 
+/**
+ * @param basePath - the cwd of the api function running
+ * @param url - the url of the PDF file
+ * @param response - the fake response from the llm
+ * @returns - CoreMessage[]
+ */
 function createExampleInputAndResponse(
+  basePath: string,
   url: string,
   response: { grade: string; yellow_flags: string[]; red_flags: string[] },
 ): CoreMessage[] {
@@ -153,7 +160,7 @@ function createExampleInputAndResponse(
         },
         {
           type: "file",
-          data: fs.readFileSync(path.join(process.cwd(), url)),
+          data: fs.readFileSync(path.join(basePath, url)),
           mimeType: "application/pdf",
         },
       ],
@@ -168,13 +175,30 @@ function createExampleInputAndResponse(
 export function messages(
   parsed: PdfParse.Result,
   pdfBuffer: Buffer,
+  basePath: string,
 ): CoreMessage[] {
   return [
     { role: "system", content: sysPrompt(parsed?.info?.Author) },
-    ...createExampleInputAndResponse("public/s_resume.pdf", sResponse),
-    ...createExampleInputAndResponse("public/a_resume.pdf", aResponse),
-    ...createExampleInputAndResponse("public/b_resume.pdf", bResponse),
-    ...createExampleInputAndResponse("public/c_resume.pdf", cResponse),
+    ...createExampleInputAndResponse(
+      basePath,
+      "public/s_resume.pdf",
+      sResponse,
+    ),
+    ...createExampleInputAndResponse(
+      basePath,
+      "public/a_resume.pdf",
+      aResponse,
+    ),
+    ...createExampleInputAndResponse(
+      basePath,
+      "public/b_resume.pdf",
+      bResponse,
+    ),
+    ...createExampleInputAndResponse(
+      basePath,
+      "public/c_resume.pdf",
+      cResponse,
+    ),
     {
       role: "user",
       content: [

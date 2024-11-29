@@ -65,7 +65,7 @@ export default async function handler(
     const completion = await generateObject({
       model: google("gemini-1.5-pro"),
       temperature: 0,
-      messages: messages(parsed, pdfBuffer),
+      messages: messages(parsed, pdfBuffer, process.cwd()),
       schema: ResponseSchema,
     });
 
