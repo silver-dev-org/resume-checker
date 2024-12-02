@@ -8,7 +8,7 @@ import { sendGAEvent } from "@next/third-parties/google";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function getUrlFromFormData(formData?: FormData) {
   if (!formData) return "";
@@ -28,6 +28,7 @@ function getUrlFromFormUrl(url?: string) {
 export default function Review() {
   const router = useRouter();
   const [formState] = useFormState();
+  const [isFeedbackFormOpen, setFeedbackFormOpen] = useState(false);
 
   const mutation = useMutation<
     FormState,
@@ -153,15 +154,23 @@ export default function Review() {
           {mutation.isPending ? (
             <p className="opacity-0 animate-[fadeIn_200ms_ease-in_3s_forwards] px-4 py-2 text-center bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-semibold rounded-lg shadow-md border border-gray-300 dark:border-gray-700">
               <span className="mr-2 text-blue-500 dark:text-blue-400">●</span>
-              Un poco más, estamos procesando tu cv...
+              El proceso puede tardar un hasta 2 minutos...
             </p>
           ) : (
-            <Link
-              href="/"
-              className="px-10 py-2 text-center block rounded-lg bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer text-white"
-            >
-              Probá otra vez
-            </Link>
+            <div className="flex flex-col gap-4">
+              <Link
+                href="/"
+                className="px-10 py-2 text-center block rounded-lg bg-indigo-800 font-bold hover:bg-indigo-600 cursor-pointer text-white"
+              >
+                Probá otra vez
+              </Link>
+              <button onClick={() => setFeedbackFormOpen(true)}>
+                Dijo cualquiera?{" "}
+                <span className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-300 dark:hover:text-indigo-200 cursor-pointer">
+                  Avisanos...
+                </span>
+              </button>
+            </div>
           )}
         </div>
         <hr className="w-full my-8 lg:col-span-2" />
@@ -191,7 +200,13 @@ export default function Review() {
           allowFullScreen
         ></iframe>
       </div>
-      {mutation.isSuccess ? <FeedbackForm data={mutation.data} /> : null}
+      {mutation.isSuccess ? (
+        <FeedbackForm
+          data={mutation.data}
+          setFeedbackFormOpen={setFeedbackFormOpen}
+          isFeedbackFormOpen={isFeedbackFormOpen}
+        />
+      ) : null}
     </>
   );
 }
