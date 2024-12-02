@@ -1,16 +1,25 @@
 import path from "node:path";
 import fs from "node:fs";
-import { type CoreMessage } from "ai";
+import { GenerateObjectResult, type CoreMessage } from "ai";
 import PdfParse from "pdf-parse";
+import { z } from "zod";
 import { TYPST_TEMPLATE_URL } from "@/utils";
 
-const sResponse = {
+export type ResponseData = z.infer<typeof ResponseSchema>;
+
+export const ResponseSchema = z.object({
+  grade: z.enum(["S", "A", "B", "C"]),
+  red_flags: z.array(z.string()),
+  yellow_flags: z.array(z.string()),
+});
+
+const sResponse: ResponseData = {
   grade: "S",
   yellow_flags: [],
   red_flags: [],
 };
 
-const aResponse = {
+const aResponse: ResponseData = {
   grade: "A",
   yellow_flags: [
     "Incluir tecnologías en el título o subtítulo del CV, lo que hace que parezca relleno.",
@@ -24,7 +33,7 @@ const aResponse = {
   ],
 };
 
-const bResponse = {
+const bResponse: ResponseData = {
   grade: "B",
   yellow_flags: [
     "La sección de habilidades es extensa y poco específica. Te recomiendo que la ajustes a la descripción del puesto al que te postulás, incluyendo las habilidades más relevantes y omitiendo las menos importantes o redundantes.",
@@ -39,7 +48,7 @@ const bResponse = {
   ],
 };
 
-const cResponse = {
+const cResponse: ResponseData = {
   grade: "C",
   red_flags: [
     `Formato y diseño: El CV parece no seguir el estilo recomendado para Estados Unidos (como Latex o un generador similar), lo que puede restarle profesionalismo. Usá el [template de silver.dev](${TYPST_TEMPLATE_URL}).`,
@@ -138,11 +147,7 @@ ${GUIDE}
 ${NON_FLAGS}
 `;
 
-function createAssistantResponse(response: {
-  grade: string;
-  yellow_flags: string[];
-  red_flags: string[];
-}): CoreMessage {
+function createAssistantResponse(response: ResponseData): CoreMessage {
   return {
     role: "assistant",
     content: JSON.stringify(response),
@@ -198,4 +203,32 @@ export function messages(
     ...trainMessages,
     createInput(pdfBuffer),
   ];
+}
+
+function hasGmail(flag: string) {
+  const r = new RegExp(/gmail/i);
+  return r.test(flag);
+}
+
+function removeGmailFlag(data: ResponseData) {
+  const idxR = data.red_flags.findIndex(hasGmail);
+  const idxY = data.yellow_flags.findIndex(hasGmail);
+
+  if (idxR !== -1) {
+    data.red_flags = data.red_flags.splice(idxR, 1);
+  }
+
+  if (idxY !== -1) {
+    data.yellow_flags = data.yellow_flags.splice(idxY, 1);
+  }
+}
+
+export function sanitizeCompletion(
+  completion: GenerateObjectResult<ResponseData>,
+): ResponseData {
+  const data = { ...completion.object };
+
+  removeGmailFlag(data);
+
+  return data;
 }
