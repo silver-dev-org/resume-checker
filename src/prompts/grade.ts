@@ -167,8 +167,11 @@ function createInput(data: Buffer): CoreMessage {
   };
 }
 
-// TODO: validate exists
-const ENCRYPTION_KEY = Buffer.from(process.env.ENCRYPTION_KEY || "", "base64");
+if (!process.env.ENCRYPTION_KEY) {
+  throw new Error("ENCRYPTION_KEY must be set in the env file");
+}
+
+const ENCRYPTION_KEY = Buffer.from(process.env.ENCRYPTION_KEY, "base64");
 
 function decrypt(buffer: Buffer) {
   const text = buffer.toString("utf8");
