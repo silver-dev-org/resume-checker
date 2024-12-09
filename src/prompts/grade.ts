@@ -210,9 +210,20 @@ function hasGmail(flag: string) {
   return r.test(flag);
 }
 
+function hasHotmail(flag: string) {
+  const r = new RegExp(/hotmail/i);
+  return r.test(flag);
+}
+
+/**
+ * Remove the gmail flag if hotmail is not mentioned to avoid cases like
+ * "Don't use hotmail, use gmail"
+ */
 function removeGmailFlag(data: ResponseData) {
-  const idxR = data.red_flags.findIndex(hasGmail);
-  const idxY = data.yellow_flags.findIndex(hasGmail);
+  const idxR = data.red_flags.findIndex((f) => !hasHotmail(f) && hasGmail(f));
+  const idxY = data.yellow_flags.findIndex(
+    (f) => !hasHotmail(f) && hasGmail(f),
+  );
 
   if (idxR !== -1) {
     data.red_flags = data.red_flags.splice(idxR, 1);
