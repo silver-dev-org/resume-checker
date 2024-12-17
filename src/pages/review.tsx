@@ -1,5 +1,6 @@
 import FeedbackForm from "@/components/feedback-form";
 import Flags from "@/components/flags";
+import PDF from "@/components/pdf";
 import Score from "@/components/score";
 import Skeleton from "@/components/skeleton";
 import { useFormState } from "@/hooks/form-context";
@@ -9,21 +10,6 @@ import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
-function getUrlFromFormData(formData?: FormData) {
-  if (!formData) return "";
-  const resume = formData.get("resume");
-  if (resume instanceof Blob) return URL.createObjectURL(resume);
-
-  return "";
-}
-
-function getUrlFromFormUrl(url?: string) {
-  if (!url) return "";
-  if (url.startsWith("https")) return url;
-
-  return url.replace("public", "");
-}
 
 export default function Review() {
   const router = useRouter();
@@ -89,25 +75,7 @@ export default function Review() {
   return (
     <>
       <div className="mt-6 animate-fly-in container mx-auto px-4 grid lg:grid-cols-2 gap-6">
-        <object
-          className="rounded-lg overflow-hidden mb-8 border-2 border-black/30 dark:border-white/30 h-full lg:min-h-[500px]"
-          type="application/pdf"
-          data={
-            formState.formData
-              ? getUrlFromFormData(formState.formData)
-              : getUrlFromFormUrl(formState.url)
-          }
-          onLoad={(object) => {
-            // free memory
-            URL.revokeObjectURL((object.target as HTMLObjectElement).data);
-          }}
-          width="100%"
-          height="100%"
-        >
-          <p className="flex w-full h-full text-center items-center justify-center">
-            Tu browser no permite PDFs.
-          </p>
-        </object>
+        <PDF />
         <div>
           <h2 className="text-2xl mb-4">El Puntaje de tu CV</h2>
           <div className="mb-8">

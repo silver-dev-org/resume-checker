@@ -1,11 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { generateObject } from "ai";
-import { z } from "zod";
 import { google } from "@ai-sdk/google";
 import fs from "node:fs";
 import path from "node:path";
 import pdf from "pdf-parse";
-import { messages } from "@/prompts/grade";
+import {
+  messages,
+  ResponseData,
+  ResponseSchema,
+  sanitizeCompletion,
+} from "@/prompts/grade";
 
 function isMultipartFormData(req: NextApiRequest) {
   return (
@@ -14,17 +18,9 @@ function isMultipartFormData(req: NextApiRequest) {
   );
 }
 
-type ResponseData = z.infer<typeof ResponseSchema> | { error: string };
-
-const ResponseSchema = z.object({
-  grade: z.enum(["S", "A", "B", "C"]),
-  red_flags: z.array(z.string()),
-  yellow_flags: z.array(z.string()),
-});
-
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData>,
+  res: NextApiResponse<ResponseData | { error: string }>,
 ) {
   try {
     if (!["POST", "GET"].includes(req.method || "")) {
@@ -75,7 +71,9 @@ export default async function handler(
       );
     }
 
-    res.status(200).json(completion.object);
+    const sanitized = sanitizeCompletion(completion);
+
+    res.status(200).json(sanitized);
   } catch (err) {
     console.error(err);
     res
