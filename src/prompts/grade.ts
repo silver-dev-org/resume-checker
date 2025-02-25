@@ -1,5 +1,6 @@
 import path from "node:path";
 import fs from "node:fs";
+import crypto from "node:crypto";
 import { GenerateObjectResult, type CoreMessage } from "ai";
 import PdfParse from "pdf-parse";
 import { z } from "zod";
@@ -171,12 +172,30 @@ function createInput(data: Buffer): CoreMessage {
   };
 }
 
+const ENCRYPTION_KEY = Buffer.from(process.env.ENCRYPTION_KEY || "", "base64");
+
+function decrypt(buffer: Buffer) {
+  const text = buffer.toString("utf8");
+  const textParts = text.split(":");
+  const iv = Buffer.from(textParts[0], "hex");
+  const encryptedText = Buffer.from(textParts[1], "hex");
+  const decipher = crypto.createDecipheriv(
+    "aes-256-cbc",
+    Buffer.from(ENCRYPTION_KEY),
+    iv,
+  );
+  let decrypted = decipher.update(encryptedText);
+  decrypted = Buffer.concat([decrypted, decipher.final()]);
+
+  return decrypted;
+}
+
 /* Moving the fs.readFileSync call deeper causes an error when reading files */
 export function messages(
   parsed: PdfParse.Result,
   pdfBuffer: Buffer,
 ): CoreMessage[] {
-  const trainMessages: CoreMessage[] = [
+  const msgs = [
     {
       data: fs.readFileSync(path.join(process.cwd(), "public/s_resume.pdf")),
       response: sResponse,
@@ -193,7 +212,174 @@ export function messages(
       data: fs.readFileSync(path.join(process.cwd(), "public/c_resume.pdf")),
       response: cResponse,
     },
-  ].flatMap(({ data, response }) => [
+  ];
+
+  if (process.env.ENCRYPTION_KEY) {
+    try {
+      msgs.push(
+        {
+          data: decrypt(
+            fs.readFileSync(
+              path.join(process.cwd(), "public/encrypted/tomassi.pdf.enc"),
+            ),
+          ),
+          response: {
+            grade: "B",
+            yellow_flags: [
+              "En cada experiencia laboral, cuantificá tus logros con métricas y números para demostrar el impacto de tu trabajo. Por ejemplo, en 'Senior Web Developer', podrías mencionar cuántos usuarios usaron los sitios web que desarrollaste o cómo mejoraste la performance de la aplicación.",
+              "En 'Software Developer PHP', podrías mencionar el éxito de los 65 proyectos web que lideraste. ¿Aumentaron las ventas? ¿Mejoró la satisfacción del cliente? Incluí datos concretos que demuestren tu impacto.",
+            ],
+            red_flags: [
+              "No menciones 'over 10 years of experience'. En lugar de eso, cuantificá tus logros con métricas y resultados concretos.",
+              "Quitá la sección 'LANGUAGE'. Si la empresa requiere un nivel de inglés específico, lo va a mencionar en la descripción del trabajo. Si no lo menciona, asumí que con que puedas comunicarte está bien. En la entrevista podés mencionar tu nivel de inglés si te sentís cómodo.",
+              "No incluyas un resumen genérico como el que tenés en 'ABOUT ME'. Tenés que adaptar esta sección a cada empresa a la que te postules, respondiendo a la pregunta de por qué deberían contratarte.",
+              "Quitá la sección 'SKILLS'. En lugar de eso, incorporá tus habilidades dentro de la descripción de tus experiencias laborales, con ejemplos concretos de cómo las usaste y los resultados que obtuviste. Mencionar las tecnologías sin contexto no aporta valor a tu CV.",
+              "Tus habilidades y experiencias no son muy consistentes, sos Back End Developer, Full Stack o Front End? Mencionás SEO, graphical interfaces y el puesto de trabajo dice Back End, tratá de adaptar el CV al puesto que estás buscando.",
+            ],
+          },
+        },
+        {
+          data: decrypt(
+            fs.readFileSync(
+              path.join(process.cwd(), "public/encrypted/gimenez.pdf.enc"),
+            ),
+          ),
+          response: {
+            grade: "C",
+            yellow_flags: [
+              "Las habilidades están listadas sin mayor detalle. En lugar de simplemente enumerarlas, describí cómo las has aplicado en proyectos concretos y cuantificá los resultados siempre que sea posible.",
+              "No hay información sobre proyectos personales, lo que podría ser una buena oportunidad para demostrar tus habilidades y pasión por la tecnología. Si tenés proyectos, incluilos.",
+              "La experiencia laboral no está descrita con suficiente detalle. Incluí más información sobre tus responsabilidades y logros cuantificables.",
+            ],
+            red_flags: [
+              "El CV está en español, lo cual es un rechazo inmediato en el mercado estadounidense.",
+              `Formato y diseño: El CV no sigue las recomendaciones para empresas en Estados Unidos. Se recomienda usar un template como el de [silver.dev](${TYPST_TEMPLATE_URL}) en Typst para un estilo Latex.`,
+              "El CV incluye una foto, lo cual no se recomienda para empresas en Estados Unidos.",
+              "La sección 'Acerca de' no existe. Es fundamental agregar una sección que explique por qué la empresa debería contratarte, adaptándola a cada puesto al que te postules.",
+              "Las habilidades como 'comunicativo' u 'organizado' no sirven en un CV.",
+              "Tus habilidades y experiencias no son muy consistentes, sos Back End Developer, Full Stack o Front End? Tratá de adaptar el CV al puesto que estás buscando.",
+            ],
+          },
+        },
+        {
+          data: decrypt(
+            fs.readFileSync(
+              path.join(process.cwd(), "public/encrypted/villalobos.pdf.enc"),
+            ),
+          ),
+          response: {
+            grade: "C",
+            yellow_flags: [
+              "Listar skills a mansalva no es bueno, puede ser considerado 'spray & pray'",
+              "No hay información sobre proyectos personales, lo que podría ser una buena oportunidad para demostrar tus habilidades y pasión por la tecnología. Si tenés proyectos, incluilos.",
+            ],
+            red_flags: [
+              "El CV está en español, lo cual es un rechazo inmediato en el mercado estadounidense.",
+              `Formato y diseño: El CV no sigue las recomendaciones para empresas en Estados Unidos. Se recomienda usar un template como el de [silver.dev](${TYPST_TEMPLATE_URL}) en Typst para un estilo Latex.`,
+              "No cuantificás tus logros. En lugar de decir 'mejorar y extender el sistema', podrías decir 'Mejoré la eficiencia del sistema en un 15% al reducir el tiempo de carga en un 20%'. Siempre que puedas, incluí números y datos concretos para respaldar tus afirmaciones.",
+              "El currículum tiene dos páginas. Para empresas en Estados Unidos, lo ideal es que el CV tenga una sola página, a menos que tengas una trayectoria muy extensa y destacada. Tenés que sintetizar la información de forma concisa y relevante.",
+              "Hay errores de tipeo o gramaticales ('consoulting', 'él envió'). Antes de enviar tu CV, revisalo cuidadosamente o usá un corrector gramatical como Grammarly. Errores como estos dan una mala impresión y pueden ser motivo de rechazo automático en muchos casos.",
+            ],
+          },
+        },
+        {
+          data: decrypt(
+            fs.readFileSync(
+              path.join(process.cwd(), "public/encrypted/boga.pdf.enc"),
+            ),
+          ),
+          response: {
+            grade: "A",
+            yellow_flags: [
+              "Tu CV usa varias fuentes distintas, serif y sans-serif, procura usar una sola.",
+              "En la sección de experiencia, podrías cuantificar tus logros con mayor precisión. Por ejemplo, en lugar de decir 'contribuyó al crecimiento significativo de la empresa', podrías decir 'aumenté la base de clientes en un X%' o 'implementé una nueva estrategia que generó un aumento del Y% en las ventas'.",
+            ],
+            red_flags: [],
+          },
+        },
+        {
+          data: decrypt(
+            fs.readFileSync(
+              path.join(process.cwd(), "public/encrypted/oviedo.pdf.enc"),
+            ),
+          ),
+          response: {
+            grade: "B",
+            yellow_flags: [
+              "En la sección de idiomas, la descripción de tu nivel de inglés es redundante. Podés simplificarlo a 'Upper-intermediate English' y mencionar que te comunicás con fluidez en entornos profesionales y técnicos.",
+            ],
+            red_flags: [
+              "Incluir 'Product managment fundamentals' como certificación es poco usual, podrías omitirlo o detallarlo más en la sección de experiencia si es relevante para el puesto al que te postulás.",
+              `Formato y diseño: El CV no sigue las recomendaciones para empresas en Estados Unidos. Se recomienda usar un template como el de [silver.dev](${TYPST_TEMPLATE_URL}) en Typst para un estilo Latex.`,
+              "La lista de certificaciones es extensa y poco específica. Enfocate en las más relevantes para el puesto al que te postulás y organizalas de manera más visual, por ejemplo, agrupándolas por categorías o áreas de especialización.",
+              "Hay errores de tipeo o gramaticales ('deliveri', 'Certificacions'). Antes de enviar tu CV, revisalo cuidadosamente o usá un corrector gramatical como Grammarly. Errores como estos dan una mala impresión y pueden ser motivo de rechazo automático en muchos casos.",
+            ],
+          },
+        },
+        {
+          data: decrypt(
+            fs.readFileSync(
+              path.join(process.cwd(), "public/encrypted/porracin.pdf.enc"),
+            ),
+          ),
+          response: {
+            grade: "B",
+            yellow_flags: [
+              "La sección 'Logros' no está cuantificada. En lugar de simplemente mencionar los logros, cuantificá el impacto de los mismos con datos y números para que sean más convincentes. Por ejemplo, en lugar de decir 'Ahorro drástico en los tiempos de desarrollo', podrías decir 'Reducción del 30% en los tiempos de desarrollo'.",
+              "Si bien mencionás responsabilidades en cada puesto, es importante destacar los logros y resultados obtenidos en cada uno. Incluí ejemplos cuantificables de cómo tus acciones generaron un impacto positivo en la empresa.",
+            ],
+            red_flags: [
+              `Formato y diseño: El CV no sigue las recomendaciones para empresas en Estados Unidos. Se recomienda usar un template como el de [silver.dev](${TYPST_TEMPLATE_URL}) en Typst para un estilo Latex.`,
+            ],
+          },
+        },
+        {
+          data: decrypt(
+            fs.readFileSync(
+              path.join(process.cwd(), "public/encrypted/montrull.pdf.enc"),
+            ),
+          ),
+          response: {
+            grade: "C",
+            yellow_flags: [
+              "Si bien la experiencia en logística puede ser relevante para algunos puestos, asegurate de destacar las habilidades transferibles que adquiriste en esos roles y cómo se aplican al puesto al que te postulás.",
+            ],
+            red_flags: [
+              "El currículum está escrito en español, lo que no es recomendable para empresas en Estados Unidos. Siempre escribí tu currículum en inglés.",
+              "Incluir la fecha de nacimiento en el currículum no es relevante para las empresas en Estados Unidos y puede ser motivo de discriminación. Te recomiendo eliminarla.",
+              `El diseño del currículum es poco profesional y no sigue las convenciones de un currículum moderno para empresas en Estados Unidos. Te recomiendo usar un template como el de [silver.dev](${TYPST_TEMPLATE_URL}).`,
+              "La sección 'Sobre mí' es genérica y no destaca tus logros o habilidades de forma convincente. Tenés que responder a la pregunta de '¿Por qué esta empresa debería contratarme?' de manera implícita o explícita.",
+              "Las descripciones de tus experiencias laborales son demasiado breves y no proporcionan suficiente detalle sobre tus responsabilidades y logros. Incluí ejemplos concretos y cuantificables siempre que sea posible. Demostrá tus logros con métricas y resultados. En lugar de simplemente listar tareas, describí el impacto que tuviste en la empresa.",
+              "La sección de habilidades es demasiado genérica. En lugar de listar habilidades sueltas, enfocate en las habilidades más relevantes para el puesto al que te postulás y cómo las has aplicado en tus experiencias laborales. Agrupalas por categorías relevantes para mayor claridad.",
+              "Las barras de progreso para los idiomas no son profesionales y no aportan información precisa sobre tu nivel de dominio. Te recomiendo que las elimines y describas tu nivel de dominio de cada idioma de forma clara y concisa (ej. nativo, fluido, intermedio, básico).",
+            ],
+          },
+        },
+        {
+          data: decrypt(
+            fs.readFileSync(
+              path.join(process.cwd(), "public/encrypted/vega.pdf.enc"),
+            ),
+          ),
+          response: {
+            grade: "B",
+            yellow_flags: [
+              "collaborate collaborate' está repetido, revisá la ortografía y gramática del CV.",
+            ],
+            red_flags: [
+              "Tu CV no tiene nombre.",
+              "Las descripciones de tus experiencias laborales son demasiado breves y no proporcionan suficiente detalle sobre tus responsabilidades y logros. Incluí ejemplos concretos y cuantificables siempre que sea posible. Demostrá tus logros con métricas y resultados. En lugar de simplemente listar tareas, describí el impacto que tuviste en la empresa.",
+            ],
+          },
+        },
+      );
+    } catch (err) {
+      // log error but don't throw
+      console.error(err);
+    }
+  }
+
+  const trainMessages: CoreMessage[] = msgs.flatMap(({ data, response }) => [
     createInput(data),
     createAssistantResponse(response),
   ]);
